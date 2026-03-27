@@ -314,6 +314,10 @@ select {
   font-size: 0.86rem;
 }
 
+.row-item input {
+  width: 92px;
+}
+
 .settings-panel {
   position: fixed;
   inset: 0;

@@ -105,6 +105,7 @@ const i18n = {
     promote_member: "קדם",
     social_chat: "יומן תיאום",
     social_chat_text: "רשום החלטות תקיפה וכלכלה כדי לשמור רצף עבודה קבוצתי.",
+    clan_rankings_title: "דירוג מועצות",
     progress_title: "מסכי התקדמות",
     season_archive_title: "ארכיון עונות",
     rank_label: "דירוג משוער",
@@ -125,12 +126,22 @@ const i18n = {
     strike_city_block: "ניתן לתקוף רק יעדים באותה שכבת עיר.",
     strike_farmed: "היעד הותקף כבר 5 פעמים. מתקבל רק ביזה חלקית.",
     economy_title: "כלכלה, בנק ושוק",
+    workers_title: "חלוקת עובדים",
+    workers_text: "חלק עובדים בין זהב, אספקה וסגסוגת כדי לשנות קצב ייצור.",
     bank_title: "בנק עירוני",
     bank_text: "הפקד אשראי לביטחון וצבור ריבית פסיבית במחזורי זמן.",
     bank_deposit: "הפקד 200",
     bank_withdraw: "משוך 200",
     market_title: "שוק אספקה",
     market_text: "המר סגסוגת ואשראי לפי צרכי הקרב הנוכחיים.",
+    shop_title: "חנות ציוד",
+    shop_text: "ציוד משפר תקיפה, הגנה או מודיעין. ניתן גם למכור חזרה.",
+    shop_buy_blade: "קנה להב",
+    shop_buy_plate: "קנה שריון",
+    shop_buy_array: "קנה מערך סריקה",
+    shop_sell_blade: "מכור להב",
+    shop_sell_plate: "מכור שריון",
+    shop_sell_array: "מכור מערך",
     market_buy_supplies: "קנה אספקה",
     market_sell_alloys: "מכור סגסוגת",
     city_title: "שכבת עיר",
@@ -165,6 +176,20 @@ const i18n = {
     promote_denied: "רק מנהיג יכול לקדם חברים.",
     member_not_found: "לא נמצא חבר בשם זה במועצה.",
     season_reset_done: "עונה חדשה התחילה. דירוגי העונה נשמרו בארכיון.",
+    shop_no_credits: "אין מספיק אשראי לקניה.",
+    shop_no_item: "אין פריט כזה למכירה.",
+    shop_buy_done: "הקניה הושלמה.",
+    shop_sell_done: "המכירה הושלמה.",
+    gear_blade: "להב",
+    gear_plate: "שריון",
+    gear_array: "מערך סריקה",
+    workers_gold: "עובדי אשראי",
+    workers_supply: "עובדי אספקה",
+    workers_alloy: "עובדי סגסוגת",
+    workers_assign: "שנה",
+    workers_invalid: "חלוקה לא תקינה. סך העובדים הוא 100.",
+    workers_saved: "חלוקת עובדים עודכנה.",
+    clan_assist_note: "סיוע מועצה הופעל בקרב.",
     backend_title: "חיבור שירות משותף",
     backend_text: "כדי לאפשר סימולציה מרובת שחקנים אמיתית, חבר פרויקט Supabase חינמי.",
     backend_url: "Supabase URL",
@@ -304,6 +329,7 @@ const i18n = {
     promote_member: "Promote",
     social_chat: "Coordination Log",
     social_chat_text: "Capture battle and economy decisions to keep your group aligned.",
+    clan_rankings_title: "Council Rankings",
     progress_title: "Progression Screens",
     season_archive_title: "Season Archive",
     rank_label: "Estimated Rank",
@@ -324,12 +350,22 @@ const i18n = {
     strike_city_block: "You can only attack targets in the same city tier.",
     strike_farmed: "Target already hit 5 times. Only partial loot applies.",
     economy_title: "Economy, Bank, and Market",
+    workers_title: "Worker Allocation",
+    workers_text: "Split workers between credits, supplies, and alloys to shape production.",
     bank_title: "City Bank",
     bank_text: "Deposit credits for safety and passive interest over time.",
     bank_deposit: "Deposit 200",
     bank_withdraw: "Withdraw 200",
     market_title: "Supply Market",
     market_text: "Convert alloys and credits based on current strategic needs.",
+    shop_title: "Equipment Shop",
+    shop_text: "Gear improves offense, defense, or intel. You can also sell it back.",
+    shop_buy_blade: "Buy Blade",
+    shop_buy_plate: "Buy Plate",
+    shop_buy_array: "Buy Scanner",
+    shop_sell_blade: "Sell Blade",
+    shop_sell_plate: "Sell Plate",
+    shop_sell_array: "Sell Scanner",
     market_buy_supplies: "Buy Supplies",
     market_sell_alloys: "Sell Alloys",
     city_title: "City Tier",
@@ -364,6 +400,20 @@ const i18n = {
     promote_denied: "Only leaders can promote members.",
     member_not_found: "Member not found in your council.",
     season_reset_done: "New season started. Previous season rankings archived.",
+    shop_no_credits: "Not enough credits to buy.",
+    shop_no_item: "You do not own this item.",
+    shop_buy_done: "Purchase completed.",
+    shop_sell_done: "Sale completed.",
+    gear_blade: "Blade",
+    gear_plate: "Plate",
+    gear_array: "Scanner",
+    workers_gold: "Credit workers",
+    workers_supply: "Supply workers",
+    workers_alloy: "Alloy workers",
+    workers_assign: "Update",
+    workers_invalid: "Invalid allocation. Total workers must equal 100.",
+    workers_saved: "Worker allocation updated.",
+    clan_assist_note: "Council assist activated in battle.",
     backend_title: "Shared Service Connection",
     backend_text: "Connect a free Supabase project for real shared multiplayer simulation.",
     backend_url: "Supabase URL",
@@ -503,6 +553,7 @@ const i18n = {
     promote_member: "Повысить",
     social_chat: "Журнал координации",
     social_chat_text: "Фиксируйте боевые и экономические решения команды.",
+    clan_rankings_title: "Рейтинг советов",
     progress_title: "Экраны прогресса",
     season_archive_title: "Архив сезонов",
     rank_label: "Оценочный ранг",
@@ -523,12 +574,22 @@ const i18n = {
     strike_city_block: "Можно атаковать только цели того же уровня города.",
     strike_farmed: "Цель уже атакована 5 раз. Доступна только частичная добыча.",
     economy_title: "Экономика, банк и рынок",
+    workers_title: "Распределение работников",
+    workers_text: "Распределяйте работников между кредитами, припасами и сплавом.",
     bank_title: "Городской банк",
     bank_text: "Депозит защищает средства и дает пассивный прирост.",
     bank_deposit: "Депозит 200",
     bank_withdraw: "Снять 200",
     market_title: "Рынок снабжения",
     market_text: "Обменивайте сплав и кредиты под текущие задачи.",
+    shop_title: "Магазин снаряжения",
+    shop_text: "Снаряжение усиливает атаку, защиту и разведку. Можно продавать обратно.",
+    shop_buy_blade: "Купить клинок",
+    shop_buy_plate: "Купить броню",
+    shop_buy_array: "Купить сканер",
+    shop_sell_blade: "Продать клинок",
+    shop_sell_plate: "Продать броню",
+    shop_sell_array: "Продать сканер",
     market_buy_supplies: "Купить припасы",
     market_sell_alloys: "Продать сплав",
     city_title: "Уровень города",
@@ -563,6 +624,20 @@ const i18n = {
     promote_denied: "Только лидер может повышать участников.",
     member_not_found: "Участник с таким именем не найден.",
     season_reset_done: "Начался новый сезон. Результаты прошлой кампании сохранены.",
+    shop_no_credits: "Недостаточно кредитов для покупки.",
+    shop_no_item: "У вас нет этого предмета.",
+    shop_buy_done: "Покупка завершена.",
+    shop_sell_done: "Продажа завершена.",
+    gear_blade: "Клинок",
+    gear_plate: "Броня",
+    gear_array: "Сканер",
+    workers_gold: "Рабочие кредитов",
+    workers_supply: "Рабочие припасов",
+    workers_alloy: "Рабочие сплава",
+    workers_assign: "Обновить",
+    workers_invalid: "Неверное распределение. Сумма должна быть 100.",
+    workers_saved: "Распределение работников обновлено.",
+    clan_assist_note: "Активирована поддержка совета в бою.",
     backend_title: "Подключение общего сервиса",
     backend_text: "Подключите бесплатный Supabase для общей мультиплеерной симуляции.",
     backend_url: "Supabase URL",
@@ -642,6 +717,7 @@ const state = {
   seasonArchive: [],
   councilInfo: null,
   councilRole: "member",
+  councilMemberCount: 0,
   tipsDisabled: localStorage.getItem("mist-tips-disabled") === "1",
   tipShown: {},
 };
@@ -667,6 +743,8 @@ function defaultUser() {
     bankGold: 0,
     cityTier: 1,
     seasonNumber: 1,
+    gear: { blade: 0, plate: 0, array: 0 },
+    workers: { gold: 34, supply: 33, alloy: 33 },
     reports: {},
     attackHistory: {},
     seasonStart: Date.now(),
@@ -676,7 +754,13 @@ function defaultUser() {
 function loadUser() {
   try {
     const parsed = JSON.parse(localStorage.getItem("mist-user"));
-    return parsed ? { ...defaultUser(), ...parsed } : defaultUser();
+    if (!parsed) return defaultUser();
+    const merged = { ...defaultUser(), ...parsed };
+    merged.gear = { ...defaultUser().gear, ...(parsed.gear || {}) };
+    merged.workers = { ...defaultUser().workers, ...(parsed.workers || {}) };
+    merged.reports = parsed.reports || {};
+    merged.attackHistory = parsed.attackHistory || {};
+    return merged;
   } catch {
     return defaultUser();
   }
@@ -726,9 +810,10 @@ function regen() {
   if (gained > 0) {
     state.user.commandPoints = Math.min(MAX_COMMAND_POINTS, state.user.commandPoints + gained);
     const bonus = 1 + getCityBonus() / 100;
-    state.user.credits += Math.floor(70 * gained * bonus);
-    state.user.supplies += Math.floor(60 * gained * bonus);
-    state.user.alloys += Math.floor(35 * gained * bonus);
+    const workers = state.user.workers || { gold: 34, supply: 33, alloy: 33 };
+    state.user.credits += Math.floor(90 * gained * bonus * (workers.gold / 100));
+    state.user.supplies += Math.floor(90 * gained * bonus * (workers.supply / 100));
+    state.user.alloys += Math.floor(90 * gained * bonus * (workers.alloy / 100));
     state.user.bankGold += Math.floor(state.user.bankGold * 0.01 * gained);
     state.user.lastTick += gained * TICK_MS;
     saveUser();
@@ -814,6 +899,9 @@ function refreshUI() {
   renderSocialPanel();
   renderSeasonArchive();
   renderIntelReports();
+  renderGearStats();
+  renderWorkersPanel();
+  renderClanRankings();
 }
 
 function renderStats() {
@@ -981,6 +1069,58 @@ function renderIntelReports() {
   });
 }
 
+function renderGearStats() {
+  const wrap = document.getElementById("gear-stats");
+  if (!wrap) return;
+  const rows = [
+    [t("gear_blade"), state.user.gear?.blade || 0],
+    [t("gear_plate"), state.user.gear?.plate || 0],
+    [t("gear_array"), state.user.gear?.array || 0],
+  ];
+  wrap.innerHTML = "";
+  rows.forEach(([k, v]) => {
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>${k}</span><span class="minor">${v}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
+function renderWorkersPanel() {
+  const wrap = document.getElementById("workers-panel");
+  if (!wrap) return;
+  const w = state.user.workers || { gold: 34, supply: 33, alloy: 33 };
+  wrap.innerHTML = `
+    <div class="row-item"><span>${t("workers_gold")}</span><input id="workers-gold" type="number" min="0" max="100" value="${w.gold}"></div>
+    <div class="row-item"><span>${t("workers_supply")}</span><input id="workers-supply" type="number" min="0" max="100" value="${w.supply}"></div>
+    <div class="row-item"><span>${t("workers_alloy")}</span><input id="workers-alloy" type="number" min="0" max="100" value="${w.alloy}"></div>
+    <button class="btn btn-secondary" data-action="workers-save">${t("workers_assign")}</button>
+  `;
+}
+
+function renderClanRankings() {
+  const wrap = document.getElementById("clan-rankings");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const scores = new Map();
+  state.leaderboard.forEach((p) => {
+    const key = p.council_code || p.council || "-";
+    if (key === "-") return;
+    scores.set(key, (scores.get(key) || 0) + (p.power || 0));
+  });
+  const rows = [...scores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("no_data")}</span></div>`;
+    return;
+  }
+  rows.forEach(([name, score], idx) => {
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>#${idx + 1} ${escapeHtml(name)}</span><span class="minor">${Number(score).toLocaleString()}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -1024,6 +1164,24 @@ function increaseAttackCount(targetId) {
   state.user.attackHistory[targetId] = attackCountForTarget(targetId) + 1;
 }
 
+function getGearBonus() {
+  const gear = state.user.gear || { blade: 0, plate: 0, array: 0 };
+  return {
+    attack: gear.blade * 6,
+    defense: gear.plate * 6,
+    intel: gear.array * 6,
+  };
+}
+
+function getClanAssistBonus(target) {
+  if (!state.user.code || !target) return { value: 0, active: false };
+  if ((target.council_code || target.council || "") === state.user.code) return { value: 0, active: false };
+  const treasuryBoost = Math.min(20, Math.floor((state.councilInfo?.treasury || 0) / 500));
+  const memberBoost = Math.min(20, (state.councilMemberCount || 0) * 2);
+  const total = treasuryBoost + memberBoost;
+  return { value: total, active: total > 0 };
+}
+
 async function applyTargetDamage(target, deltaPower) {
   if (!target || !deltaPower) return;
   if (backend.mode === "supabase") {
@@ -1044,8 +1202,10 @@ async function resolvePvpStrike(target) {
   const report = getReportForTarget(target.player_id);
   const hasFreshRecon = report && Date.now() - report.timestamp < 60 * 60 * 1000;
   const reconBonus = hasFreshRecon ? 24 : -18;
-  const attackScore = state.user.power + state.user.intel * 0.45 + Math.random() * 40 + getCityBonus() + reconBonus;
-  const defenseScore = (target.power || 0) + (target.intel || 0) * 0.3 + (target.influence || 0) * 0.2 + Math.random() * 35;
+  const gear = getGearBonus();
+  const clanAssist = getClanAssistBonus(target);
+  const attackScore = state.user.power + state.user.intel * 0.45 + Math.random() * 40 + getCityBonus() + reconBonus + gear.attack + clanAssist.value;
+  const defenseScore = (target.power || 0) + (target.intel || 0) * 0.3 + (target.influence || 0) * 0.2 + Math.random() * 35 + gear.defense;
   const diff = attackScore - defenseScore;
   const repeated = attackCountForTarget(target.player_id) >= 5;
 
@@ -1058,7 +1218,8 @@ async function resolvePvpStrike(target) {
     increaseAttackCount(target.player_id);
     const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
     const farm = repeated ? ` ${t("strike_farmed")}` : "";
-    return `${t("pvp_win")} ${target.commander} (+${loot}).${warning}${farm}`;
+    const assist = clanAssist.active ? ` ${t("clan_assist_note")}` : "";
+    return `${t("pvp_win")} ${target.commander} (+${loot}).${warning}${farm}${assist}`;
   }
   if (diff < -30) {
     state.user.power = Math.max(0, state.user.power - 10);
@@ -1066,13 +1227,15 @@ async function resolvePvpStrike(target) {
     await applyTargetDamage(target, 4);
     increaseAttackCount(target.player_id);
     const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
-    return `${t("pvp_loss")} ${target.commander}.${warning}`;
+    const assist = clanAssist.active ? ` ${t("clan_assist_note")}` : "";
+    return `${t("pvp_loss")} ${target.commander}.${warning}${assist}`;
   }
   state.user.power += 1;
   await applyTargetDamage(target, -2);
   increaseAttackCount(target.player_id);
   const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
-  return `${t("pvp_draw")} ${target.commander}.${warning}`;
+  const assist = clanAssist.active ? ` ${t("clan_assist_note")}` : "";
+  return `${t("pvp_draw")} ${target.commander}.${warning}${assist}`;
 }
 
 async function doAction(type) {
@@ -1083,7 +1246,7 @@ async function doAction(type) {
     scout: () => {
       if (!spendPoints(2)) return t("need_points");
       const gain = targetPlayer ? 18 : 14;
-      state.user.intel += 14;
+      state.user.intel += 14 + Math.floor((state.user.gear?.array || 0) * 1.5);
       state.user.influence += 7;
       state.user.power += 2;
       state.user.intel += gain - 14;
@@ -1396,12 +1559,14 @@ async function loadCouncilInfo() {
     return;
   }
   if (backend.mode === "supabase") {
-    const [councilRes, memberRes] = await Promise.all([
+    const [councilRes, memberRes, membersRes] = await Promise.all([
       backend.client.from("world_councils").select("council_code,council_name,treasury").eq("council_code", state.user.code).maybeSingle(),
       backend.client.from("world_council_members").select("role").eq("council_code", state.user.code).eq("player_id", state.user.id).maybeSingle(),
+      backend.client.from("world_council_members").select("player_id", { count: "exact", head: true }).eq("council_code", state.user.code),
     ]);
     state.councilInfo = councilRes.data || null;
     state.councilRole = memberRes.data?.role || "member";
+    state.councilMemberCount = membersRes.count || 0;
     return;
   }
   loadLocalCouncilInfo();
@@ -1416,6 +1581,7 @@ function loadLocalCouncilInfo() {
   }
   state.councilInfo = world.councils.find((c) => c.council_code === state.user.code) || null;
   state.councilRole = world.members.find((m) => m.council_code === state.user.code && m.player_id === state.user.id)?.role || "member";
+  state.councilMemberCount = world.members.filter((m) => m.council_code === state.user.code).length;
 }
 
 async function doBank(type) {
@@ -1482,6 +1648,62 @@ async function doCityUpgrade() {
   log.textContent = t("city_upgrade_done");
   saveUser();
   await syncPresence();
+  refreshUI();
+}
+
+function itemCost(item) {
+  const map = {
+    blade: { buy: 280, sell: 120 },
+    plate: { buy: 280, sell: 120 },
+    array: { buy: 320, sell: 140 },
+  };
+  return map[item];
+}
+
+async function doShop(item, mode) {
+  const log = document.getElementById("economy-log");
+  const cost = itemCost(item);
+  if (!cost) return;
+  state.user.gear = state.user.gear || { blade: 0, plate: 0, array: 0 };
+
+  if (mode === "buy") {
+    if (state.user.credits < cost.buy) {
+      log.textContent = t("shop_no_credits");
+      return;
+    }
+    state.user.credits -= cost.buy;
+    state.user.gear[item] += 1;
+    log.textContent = t("shop_buy_done");
+  }
+
+  if (mode === "sell") {
+    if ((state.user.gear[item] || 0) <= 0) {
+      log.textContent = t("shop_no_item");
+      return;
+    }
+    state.user.gear[item] -= 1;
+    state.user.credits += cost.sell;
+    log.textContent = t("shop_sell_done");
+  }
+
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+async function saveWorkers() {
+  const gold = Number(document.getElementById("workers-gold")?.value || 0);
+  const supply = Number(document.getElementById("workers-supply")?.value || 0);
+  const alloy = Number(document.getElementById("workers-alloy")?.value || 0);
+  const log = document.getElementById("economy-log");
+  if (gold < 0 || supply < 0 || alloy < 0 || gold + supply + alloy !== 100) {
+    log.textContent = t("workers_invalid");
+    return;
+  }
+  state.user.workers = { gold, supply, alloy };
+  saveUser();
+  await syncPresence();
+  log.textContent = t("workers_saved");
   refreshUI();
 }
 
@@ -1748,6 +1970,8 @@ document.addEventListener("click", async (e) => {
   if (action === "auth-register") await doRegister();
   if (action === "auth-login") await doLogin();
   if (action === "auth-google") await doGoogleLogin();
+  if (action === "shop") await doShop(target.dataset.item, target.dataset.mode);
+  if (action === "workers-save") await saveWorkers();
 });
 
 document.getElementById("lang").addEventListener("change", (e) => {

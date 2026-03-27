@@ -246,6 +246,28 @@
           </div>
         </article>
         <article class="card">
+          <h3 data-i18n="workers_title"></h3>
+          <p class="screen-sub" data-i18n="workers_text"></p>
+          <div class="table-list" id="workers-panel"></div>
+        </article>
+      </div>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="shop_title"></h3>
+          <p class="screen-sub" data-i18n="shop_text"></p>
+          <div class="row">
+            <button class="btn btn-secondary" data-action="shop" data-item="blade" data-mode="buy" data-i18n="shop_buy_blade"></button>
+            <button class="btn btn-secondary" data-action="shop" data-item="plate" data-mode="buy" data-i18n="shop_buy_plate"></button>
+            <button class="btn btn-secondary" data-action="shop" data-item="array" data-mode="buy" data-i18n="shop_buy_array"></button>
+          </div>
+          <div class="row">
+            <button class="btn btn-secondary" data-action="shop" data-item="blade" data-mode="sell" data-i18n="shop_sell_blade"></button>
+            <button class="btn btn-secondary" data-action="shop" data-item="plate" data-mode="sell" data-i18n="shop_sell_plate"></button>
+            <button class="btn btn-secondary" data-action="shop" data-item="array" data-mode="sell" data-i18n="shop_sell_array"></button>
+          </div>
+          <div id="gear-stats" class="table-list"></div>
+        </article>
+        <article class="card">
           <h3 data-i18n="market_title"></h3>
           <p class="screen-sub" data-i18n="market_text"></p>
           <div class="row">
@@ -305,6 +327,10 @@
           <button class="btn btn-secondary" data-action="promote-member" data-i18n="promote_member"></button>
         </article>
       </div>
+      <article class="card">
+        <h3 data-i18n="clan_rankings_title"></h3>
+        <div id="clan-rankings" class="table-list"></div>
+      </article>
       <p class="status" id="social-log"></p>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>

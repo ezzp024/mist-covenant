@@ -74,4 +74,7 @@ Site URL:
 - PvP strike resolution against real leaderboard targets.
 - Council treasury + role permissions (`leader`, `officer`, `member`).
 - Automatic season rollover with archived leaderboard snapshots.
+- Equipment shop (buy/sell) with combat stat effects.
+- Worker allocation panel that changes passive resource production.
+- Council ranking panel and clan-assist bonus integration in battles.
 - Onboarding tooltip hints across main screens.
