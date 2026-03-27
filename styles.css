@@ -413,6 +413,13 @@ select:focus-visible,
   outline-offset: 2px;
 }
 
+body.busy .btn,
+body.busy .nav-btn,
+body.busy .action-card {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
 .big {
   font-size: 1.7rem;
   font-weight: 800;

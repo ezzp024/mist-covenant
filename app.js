@@ -5,6 +5,8 @@ const SEASON_LENGTH_DAYS = 90;
 const KNOWN_SCREENS = new Set([
   "landing",
   "guide",
+  "story",
+  "faq",
   "auth",
   "character",
   "faction",
@@ -29,6 +31,8 @@ const i18n = {
   he: {
     nav_landing: "דף פתיחה",
     nav_flow: "זרימת משחק",
+    nav_story: "סיפור עולם",
+    nav_faq: "שאלות נפוצות",
     nav_dashboard: "לוח בקרה",
     language: "שפה",
     backend_settings: "שרת",
@@ -37,6 +41,7 @@ const i18n = {
     hero_subtitle: "משחק טקסט עברי-ראשון עם כלכלה, מודיעין, תורות וקרבות בין שחקנים.",
     hero_cta_primary: "להתחיל עכשיו",
     hero_cta_secondary: "איך זה עובד",
+    hero_cta_story: "קרא סיפור",
     landing_card_1_title: "קצב עולמי קבוע",
     landing_card_1_text: "נקודות פיקוד נטענות כל מחזור, כדי לתגמל תכנון ולא ספאם לחיצות.",
     landing_card_2_title: "החלטות עם מחיר",
@@ -49,6 +54,19 @@ const i18n = {
     flow_3: "בוחרים סיעה ומקימים או מצטרפים למועצה.",
     flow_4: "מבצעים תורות: סיור, פשיטה, אימון ופיתוח.",
     flow_5: "עולים בדירוג אישי וקבוצתי לאורך העונה.",
+    story_title: "סיפור העולם",
+    story_p1: "אחרי קריסת רשתות האנרגיה, חמש ערי-ענן ניתקו זו מזו ונאבקו על נתיבי אספקה.",
+    story_p2: "כל מפקד מוביל מועצה, בוחר סיעה ומנסה לאחד אזורים בלי לאבד את עורף הכלכלה.",
+    story_p3: "העונה נקבעת לא על ידי נאום, אלא על ידי תכנון תורות, מודיעין ושיתוף פעולה.",
+    faq_title: "שאלות נפוצות",
+    faq_q1: "כמה פעמים מקבלים תורות?",
+    faq_a1: "נקודות פיקוד נטענות במחזור קבוע. אפשר לראות השפעה מיידית בלוח הבקרה.",
+    faq_q2: "מה היתרון של מועצה?",
+    faq_a2: "מועצה נותנת אוצר משותף, תפקידי הנהגה, חדר מלחמה ובונוס סיוע בקרב.",
+    faq_q3: "איך מתקדמים בין ערים?",
+    faq_a3: "שדרוג עיר דורש עוצמה, מודיעין ומשאבים. כל עיר משפרת מכפיל ייצור.",
+    faq_q4: "מה נשמר בין עונות?",
+    faq_a4: "דירוגי העונה נשמרים בארכיון. ההתקדמות הפעילה מתאפסת לקמפיין חדש.",
     start_now: "כניסה למשחק",
     auth_title: "הרשמה / התחברות",
     auth_sub: "למטרת אב-טיפוס, הנתונים האישיים נשמרים מקומית בדפדפן.",
@@ -283,6 +301,8 @@ const i18n = {
   en: {
     nav_landing: "Landing",
     nav_flow: "Flow",
+    nav_story: "Story",
+    nav_faq: "FAQ",
     nav_dashboard: "Dashboard",
     language: "Language",
     backend_settings: "Server",
@@ -291,6 +311,7 @@ const i18n = {
     hero_subtitle: "Hebrew-first text strategy with economy, intel, turns, and PvP pressure.",
     hero_cta_primary: "Start Now",
     hero_cta_secondary: "How It Works",
+    hero_cta_story: "Read Story",
     landing_card_1_title: "Steady world pacing",
     landing_card_1_text: "Command points regenerate on schedule to reward planning over click spam.",
     landing_card_2_title: "Meaningful costs",
@@ -303,6 +324,19 @@ const i18n = {
     flow_3: "Pick faction and create/join a council.",
     flow_4: "Spend turns on scouting, raids, training, and growth.",
     flow_5: "Climb personal and group season ranks.",
+    story_title: "World Story",
+    story_p1: "After the energy grid collapse, five sky-cities split and fought over supply routes.",
+    story_p2: "Each commander leads a council, chooses a faction, and tries to unify districts without breaking economy.",
+    story_p3: "This season is won by planning turns, intelligence, and coordinated execution.",
+    faq_title: "Frequently Asked Questions",
+    faq_q1: "How often do turns regenerate?",
+    faq_a1: "Command points regenerate on a fixed cycle and are reflected live on the dashboard.",
+    faq_q2: "Why join a council?",
+    faq_a2: "Councils provide shared treasury, leadership roles, war room targets, and battle assist bonuses.",
+    faq_q3: "How do city tiers progress?",
+    faq_a3: "City upgrades require power, intel, and resources. Each tier raises production multiplier.",
+    faq_q4: "What persists between seasons?",
+    faq_a4: "Season ranking snapshots are archived. Active campaign progression resets.",
     start_now: "Enter Game",
     auth_title: "Register / Login",
     auth_sub: "For prototype use, personal data is stored in your browser.",
@@ -537,6 +571,8 @@ const i18n = {
   ru: {
     nav_landing: "Главная",
     nav_flow: "Поток",
+    nav_story: "История",
+    nav_faq: "FAQ",
     nav_dashboard: "Панель",
     language: "Язык",
     backend_settings: "Сервер",
@@ -545,6 +581,7 @@ const i18n = {
     hero_subtitle: "Текстовая стратегия с экономикой, разведкой, ходами и PvP.",
     hero_cta_primary: "Начать",
     hero_cta_secondary: "Как это работает",
+    hero_cta_story: "Читать историю",
     landing_card_1_title: "Стабильный ритм",
     landing_card_1_text: "Очки командования восстанавливаются по расписанию.",
     landing_card_2_title: "Цена решений",
@@ -557,6 +594,19 @@ const i18n = {
     flow_3: "Выбор фракции и создание/вход в совет.",
     flow_4: "Траты ходов на разведку, рейды, тренировки и рост.",
     flow_5: "Рост в личном и командном рейтинге сезона.",
+    story_title: "История мира",
+    story_p1: "После коллапса энергосети пять небесных городов разделились и начали борьбу за маршруты снабжения.",
+    story_p2: "Каждый командир ведет совет, выбирает фракцию и удерживает баланс между войной и экономикой.",
+    story_p3: "Сезон выигрывается не словами, а расчетом ходов, разведкой и координацией.",
+    faq_title: "Частые вопросы",
+    faq_q1: "Как часто восстанавливаются ходы?",
+    faq_a1: "Очки командования восстанавливаются по фиксированному циклу и видны на панели.",
+    faq_q2: "Зачем вступать в совет?",
+    faq_a2: "Совет дает общую казну, роли, военную комнату и бонус поддержки в бою.",
+    faq_q3: "Как идет прогресс по городам?",
+    faq_a3: "Для повышения уровня города нужны мощь, разведка и ресурсы. Каждый уровень повышает добычу.",
+    faq_q4: "Что сохраняется между сезонами?",
+    faq_a4: "Снимки рейтинга сохраняются в архив. Активный прогресс кампании сбрасывается.",
     start_now: "Войти",
     auth_title: "Регистрация / Вход",
     auth_sub: "Для прототипа данные сохраняются локально в браузере.",
@@ -826,6 +876,7 @@ const state = {
   authReady: false,
   authUserId: null,
   debugOpen: false,
+  actionLock: false,
   backendStatus: "",
   leaderboard: [],
   feed: [],
@@ -945,7 +996,7 @@ function isAuthenticated() {
 }
 
 function routeByAuth(requestedStep) {
-  const publicRoutes = new Set(["landing", "guide", "auth"]);
+  const publicRoutes = new Set(["landing", "guide", "story", "faq", "auth"]);
   const rawTarget = requestedStep || "landing";
   const target = KNOWN_SCREENS.has(rawTarget) ? rawTarget : "landing";
 
@@ -991,6 +1042,30 @@ function renderDebugPanel() {
 function toggleDebugPanel() {
   state.debugOpen = !state.debugOpen;
   renderDebugPanel();
+}
+
+function setActionLock(locked) {
+  state.actionLock = locked;
+  document.body.classList.toggle("busy", locked);
+}
+
+function isLockedAction(action) {
+  return new Set([
+    "turn",
+    "bank",
+    "market",
+    "upgrade-city",
+    "council-treasury",
+    "promote-member",
+    "auth-register",
+    "auth-login",
+    "auth-google",
+    "auth-logout",
+    "shop",
+    "workers-save",
+    "war-add",
+    "pick-faction",
+  ]).has(action);
 }
 
 function assertGameplayReady() {
@@ -2354,6 +2429,13 @@ document.addEventListener("click", async (e) => {
   if (!target) return;
   const action = target.dataset.action;
 
+  if (state.actionLock && isLockedAction(action)) {
+    return;
+  }
+
+  const shouldLock = isLockedAction(action);
+  if (shouldLock) setActionLock(true);
+
   try {
     if (action === "go") navigate(target.dataset.step);
     if (action === "turn") {
@@ -2418,6 +2500,8 @@ document.addEventListener("click", async (e) => {
   } catch (err) {
     const msg = err?.message || "Unexpected error";
     authStatus(msg);
+  } finally {
+    if (shouldLock) setActionLock(false);
   }
 });
 
