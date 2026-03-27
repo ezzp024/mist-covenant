@@ -14,6 +14,7 @@ Original browser-based multiplayer turn-strategy prototype with Hebrew-first UX 
 - `config.js` - runtime backend configuration (safe public values only)
 - `config.example.js` - template for configuration
 - `supabase-schema.sql` - SQL to create shared multiplayer tables
+- `BACKEND_CONTRACT.md` - frozen backend schema contract and change policy
 - `.nojekyll` - disables Jekyll processing for static assets
 - `404.html` - fallback redirect for Pages
 - `CNAME.example` - template for optional custom domain
@@ -43,7 +44,14 @@ window.GAME_CONFIG = {
 Notes:
 - This uses only anon public credentials (safe for frontend usage).
 - If no backend is configured, the app automatically falls back to local simulation.
-- Re-run `supabase-schema.sql` after updates to ensure new tables/columns exist.
+- Backend contract is frozen; schema changes must go through `supabase-schema.sql` and `BACKEND_CONTRACT.md`.
+
+## Stability mode checklist (run before each push)
+
+- Navigation flow: `Landing -> Register/Login -> Character -> Faction -> Clan -> Dashboard`
+- Hard refresh on each screen preserves auth guard behavior
+- Google OAuth round-trip returns user to `Character` or `Dashboard` via session guard
+- Supabase write/read smoke: insert into `world_actions`, then read latest rows
 
 ## Deploy to GitHub Pages
 
