@@ -47,6 +47,15 @@ create table if not exists public.world_season_archive (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.world_war_targets (
+  id bigint generated always as identity primary key,
+  council_code text not null references public.world_councils(council_code) on delete cascade,
+  target_player_id text not null,
+  target_commander text not null,
+  assigned_to text,
+  created_at timestamptz not null default now()
+);
+
 alter table public.world_players add column if not exists council_code text;
 alter table public.world_players add column if not exists city_tier int not null default 1;
 alter table public.world_players add column if not exists season_number int not null default 1;
@@ -57,6 +66,7 @@ alter table public.world_actions enable row level security;
 alter table public.world_councils enable row level security;
 alter table public.world_council_members enable row level security;
 alter table public.world_season_archive enable row level security;
+alter table public.world_war_targets enable row level security;
 
 drop policy if exists "world players read" on public.world_players;
 drop policy if exists "world players write" on public.world_players;
@@ -71,6 +81,8 @@ drop policy if exists "world council members write" on public.world_council_memb
 drop policy if exists "world council members update" on public.world_council_members;
 drop policy if exists "world season archive read" on public.world_season_archive;
 drop policy if exists "world season archive write" on public.world_season_archive;
+drop policy if exists "world war targets read" on public.world_war_targets;
+drop policy if exists "world war targets write" on public.world_war_targets;
 
 create policy "world players read" on public.world_players for select to anon using (true);
 create policy "world players write" on public.world_players for insert to anon with check (true);
@@ -89,5 +101,8 @@ create policy "world council members update" on public.world_council_members for
 
 create policy "world season archive read" on public.world_season_archive for select to anon using (true);
 create policy "world season archive write" on public.world_season_archive for insert to anon with check (true);
+
+create policy "world war targets read" on public.world_war_targets for select to anon using (true);
+create policy "world war targets write" on public.world_war_targets for insert to anon with check (true);
 
 alter publication supabase_realtime add table public.world_actions;

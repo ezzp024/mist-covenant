@@ -3,6 +3,14 @@ const MAX_COMMAND_POINTS = 24;
 const LOCAL_WORLD_KEY = "mist-world";
 const SEASON_LENGTH_DAYS = 90;
 
+const CITY_STAGES = [
+  { tier: 1, multiplier: 1.0, needPower: 0, needIntel: 0, costCredits: 0, costAlloys: 0 },
+  { tier: 2, multiplier: 1.6, needPower: 180, needIntel: 100, costCredits: 600, costAlloys: 220 },
+  { tier: 3, multiplier: 2.4, needPower: 380, needIntel: 220, costCredits: 1200, costAlloys: 460 },
+  { tier: 4, multiplier: 3.4, needPower: 650, needIntel: 360, costCredits: 2400, costAlloys: 900 },
+  { tier: 5, multiplier: 5.0, needPower: 980, needIntel: 520, costCredits: 4400, costAlloys: 1600 },
+];
+
 const i18n = {
   he: {
     nav_landing: "דף פתיחה",
@@ -106,6 +114,13 @@ const i18n = {
     social_chat: "יומן תיאום",
     social_chat_text: "רשום החלטות תקיפה וכלכלה כדי לשמור רצף עבודה קבוצתי.",
     clan_rankings_title: "דירוג מועצות",
+    war_room_title: "חדר מלחמה",
+    war_room_text: "סמן מטרות מועצה ושייך תוקפים לכל יעד.",
+    war_assign_placeholder: "שם תוקף",
+    war_add: "הוסף יעד",
+    war_added: "יעד נוסף לחדר המלחמה.",
+    war_denied: "רק מנהיג או קצין יכולים להוסיף יעדי מלחמה.",
+    war_empty: "אין יעדים פעילים.",
     progress_title: "מסכי התקדמות",
     season_archive_title: "ארכיון עונות",
     rank_label: "דירוג משוער",
@@ -147,8 +162,16 @@ const i18n = {
     city_title: "שכבת עיר",
     city_tier_label: "שכבה נוכחית",
     city_bonus_label: "בונוס ייצור",
+    city_gate_title: "שערי התקדמות עיר",
     city_upgrade_text: "שדרוג דורש אשראי וסגסוגת, ומגדיל בונוס משאבים.",
     city_upgrade: "שדרג עיר",
+    city_next_label: "עיר הבאה",
+    city_req_power: "דרישת עוצמה",
+    city_req_intel: "דרישת מודיעין",
+    city_req_credits: "עלות אשראי",
+    city_req_alloys: "עלות סגסוגת",
+    city_multiplier_label: "מכפיל ייצור",
+    city_max_reached: "הגעת לעיר המקסימלית לעונה זו.",
     bank_low_credits: "אין מספיק אשראי להפקדה.",
     bank_low_bank: "אין מספיק יתרה בבנק.",
     bank_deposit_done: "הפקדה הושלמה. היתרה בבנק עלתה.",
@@ -180,6 +203,11 @@ const i18n = {
     shop_no_item: "אין פריט כזה למכירה.",
     shop_buy_done: "הקניה הושלמה.",
     shop_sell_done: "המכירה הושלמה.",
+    drop_found: "נפל ציוד",
+    drop_none: "לא נפל ציוד הפעם.",
+    tier_common: "רגיל",
+    tier_rare: "נדיר",
+    tier_elite: "עלית",
     gear_blade: "להב",
     gear_plate: "שריון",
     gear_array: "מערך סריקה",
@@ -330,6 +358,13 @@ const i18n = {
     social_chat: "Coordination Log",
     social_chat_text: "Capture battle and economy decisions to keep your group aligned.",
     clan_rankings_title: "Council Rankings",
+    war_room_title: "War Room",
+    war_room_text: "Mark council targets and assign attackers per target.",
+    war_assign_placeholder: "Attacker name",
+    war_add: "Add Target",
+    war_added: "Target added to war room.",
+    war_denied: "Only leader or officer can add war targets.",
+    war_empty: "No active targets.",
     progress_title: "Progression Screens",
     season_archive_title: "Season Archive",
     rank_label: "Estimated Rank",
@@ -371,8 +406,16 @@ const i18n = {
     city_title: "City Tier",
     city_tier_label: "Current Tier",
     city_bonus_label: "Production Bonus",
+    city_gate_title: "City Progress Gates",
     city_upgrade_text: "Upgrading costs credits and alloys, then boosts resource gain.",
     city_upgrade: "Upgrade City",
+    city_next_label: "Next city",
+    city_req_power: "Power required",
+    city_req_intel: "Intel required",
+    city_req_credits: "Credits cost",
+    city_req_alloys: "Alloy cost",
+    city_multiplier_label: "Production multiplier",
+    city_max_reached: "You reached the max city for this season.",
     bank_low_credits: "Not enough credits to deposit.",
     bank_low_bank: "Not enough bank balance.",
     bank_deposit_done: "Deposit complete. Bank balance increased.",
@@ -404,6 +447,11 @@ const i18n = {
     shop_no_item: "You do not own this item.",
     shop_buy_done: "Purchase completed.",
     shop_sell_done: "Sale completed.",
+    drop_found: "Gear drop",
+    drop_none: "No gear dropped this time.",
+    tier_common: "Common",
+    tier_rare: "Rare",
+    tier_elite: "Elite",
     gear_blade: "Blade",
     gear_plate: "Plate",
     gear_array: "Scanner",
@@ -554,6 +602,13 @@ const i18n = {
     social_chat: "Журнал координации",
     social_chat_text: "Фиксируйте боевые и экономические решения команды.",
     clan_rankings_title: "Рейтинг советов",
+    war_room_title: "Военная комната",
+    war_room_text: "Отмечайте цели совета и назначайте атакующих.",
+    war_assign_placeholder: "Имя атакующего",
+    war_add: "Добавить цель",
+    war_added: "Цель добавлена в военную комнату.",
+    war_denied: "Только лидер или офицер может добавлять цели.",
+    war_empty: "Активных целей нет.",
     progress_title: "Экраны прогресса",
     season_archive_title: "Архив сезонов",
     rank_label: "Оценочный ранг",
@@ -595,8 +650,16 @@ const i18n = {
     city_title: "Уровень города",
     city_tier_label: "Текущий уровень",
     city_bonus_label: "Бонус добычи",
+    city_gate_title: "Городские пороги",
     city_upgrade_text: "Улучшение требует кредиты и сплав, затем повышает добычу.",
     city_upgrade: "Улучшить город",
+    city_next_label: "Следующий город",
+    city_req_power: "Требуемая мощь",
+    city_req_intel: "Требуемая разведка",
+    city_req_credits: "Стоимость кредитов",
+    city_req_alloys: "Стоимость сплава",
+    city_multiplier_label: "Множитель добычи",
+    city_max_reached: "Достигнут максимум города на этот сезон.",
     bank_low_credits: "Недостаточно кредитов для депозита.",
     bank_low_bank: "Недостаточно средств в банке.",
     bank_deposit_done: "Депозит выполнен. Баланс банка вырос.",
@@ -628,6 +691,11 @@ const i18n = {
     shop_no_item: "У вас нет этого предмета.",
     shop_buy_done: "Покупка завершена.",
     shop_sell_done: "Продажа завершена.",
+    drop_found: "Выпал предмет",
+    drop_none: "Предмет не выпал.",
+    tier_common: "Обычный",
+    tier_rare: "Редкий",
+    tier_elite: "Элитный",
     gear_blade: "Клинок",
     gear_plate: "Броня",
     gear_array: "Сканер",
@@ -715,6 +783,7 @@ const state = {
   leaderboard: [],
   feed: [],
   seasonArchive: [],
+  warTargets: [],
   councilInfo: null,
   councilRole: "member",
   councilMemberCount: 0,
@@ -744,6 +813,11 @@ function defaultUser() {
     cityTier: 1,
     seasonNumber: 1,
     gear: { blade: 0, plate: 0, array: 0 },
+    tierGear: {
+      blade: { common: 0, rare: 0, elite: 0 },
+      plate: { common: 0, rare: 0, elite: 0 },
+      array: { common: 0, rare: 0, elite: 0 },
+    },
     workers: { gold: 34, supply: 33, alloy: 33 },
     reports: {},
     attackHistory: {},
@@ -757,6 +831,12 @@ function loadUser() {
     if (!parsed) return defaultUser();
     const merged = { ...defaultUser(), ...parsed };
     merged.gear = { ...defaultUser().gear, ...(parsed.gear || {}) };
+    const baseTier = defaultUser().tierGear;
+    merged.tierGear = {
+      blade: { ...baseTier.blade, ...(parsed.tierGear?.blade || {}) },
+      plate: { ...baseTier.plate, ...(parsed.tierGear?.plate || {}) },
+      array: { ...baseTier.array, ...(parsed.tierGear?.array || {}) },
+    };
     merged.workers = { ...defaultUser().workers, ...(parsed.workers || {}) };
     merged.reports = parsed.reports || {};
     merged.attackHistory = parsed.attackHistory || {};
@@ -835,7 +915,16 @@ function getRank() {
 }
 
 function getCityBonus() {
-  return (state.user.cityTier - 1) * 25;
+  const stage = CITY_STAGES.find((s) => s.tier === state.user.cityTier) || CITY_STAGES[0];
+  return Math.round((stage.multiplier - 1) * 100);
+}
+
+function getCityStage(tier) {
+  return CITY_STAGES.find((s) => s.tier === tier) || CITY_STAGES[0];
+}
+
+function getNextCityStage() {
+  return CITY_STAGES.find((s) => s.tier === state.user.cityTier + 1) || null;
 }
 
 function openSettings(open) {
@@ -896,12 +985,15 @@ function refreshUI() {
   renderLeaderboard();
   renderFeed();
   renderTargetOptions();
+  renderWarTargetSelect();
   renderSocialPanel();
   renderSeasonArchive();
   renderIntelReports();
   renderGearStats();
   renderWorkersPanel();
   renderClanRankings();
+  renderCityRequirements();
+  renderWarRoom();
 }
 
 function renderStats() {
@@ -1000,6 +1092,21 @@ function renderTargetOptions() {
   updateTargetHint();
 }
 
+function renderWarTargetSelect() {
+  const select = document.getElementById("warTargetSelect");
+  if (!select) return;
+  const current = select.value;
+  const targets = state.leaderboard.filter((row) => row.player_id !== state.user.id);
+  select.innerHTML = `<option value="">${t("target_none")}</option>`;
+  targets.forEach((row) => {
+    const option = document.createElement("option");
+    option.value = row.player_id;
+    option.textContent = `${row.commander || "-"} (#${row.power || 0})`;
+    select.appendChild(option);
+  });
+  if ([...select.options].some((x) => x.value === current)) select.value = current;
+}
+
 function updateTargetHint() {
   const hint = document.getElementById("target-hint");
   const select = document.getElementById("actionTargetSelect");
@@ -1044,6 +1151,49 @@ function renderSeasonArchive() {
   });
 }
 
+function renderCityRequirements() {
+  const wrap = document.getElementById("city-reqs");
+  if (!wrap) return;
+  const next = getNextCityStage();
+  const current = getCityStage(state.user.cityTier);
+  if (!next) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("city_max_reached")}</span><span class="minor">x${current.multiplier.toFixed(1)}</span></div>`;
+    return;
+  }
+  wrap.innerHTML = "";
+  const rows = [
+    [t("city_next_label"), `T${next.tier}`],
+    [t("city_multiplier_label"), `x${next.multiplier.toFixed(1)}`],
+    [t("city_req_power"), `${state.user.power}/${next.needPower}`],
+    [t("city_req_intel"), `${state.user.intel}/${next.needIntel}`],
+    [t("city_req_credits"), `${state.user.credits}/${next.costCredits}`],
+    [t("city_req_alloys"), `${state.user.alloys}/${next.costAlloys}`],
+  ];
+  rows.forEach(([k, v]) => {
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>${k}</span><span class="minor">${v}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
+function renderWarRoom() {
+  const wrap = document.getElementById("war-room-list");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  if (!state.warTargets.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("war_empty")}</span></div>`;
+    return;
+  }
+  state.warTargets.slice(0, 8).forEach((row) => {
+    const item = document.createElement("div");
+    item.className = "row-item";
+    const assignee = row.assigned_to || "-";
+    item.innerHTML = `<span>${escapeHtml(row.target_commander || row.target_player_id || "-")}</span><span class="minor">${escapeHtml(assignee)}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function renderIntelReports() {
   const wrap = document.getElementById("intel-reports");
   if (!wrap) return;
@@ -1072,10 +1222,14 @@ function renderIntelReports() {
 function renderGearStats() {
   const wrap = document.getElementById("gear-stats");
   if (!wrap) return;
+  const tg = state.user.tierGear || defaultUser().tierGear;
   const rows = [
     [t("gear_blade"), state.user.gear?.blade || 0],
     [t("gear_plate"), state.user.gear?.plate || 0],
     [t("gear_array"), state.user.gear?.array || 0],
+    [`${t("gear_blade")} · ${t("tier_common")}/${t("tier_rare")}/${t("tier_elite")}`, `${tg.blade.common}/${tg.blade.rare}/${tg.blade.elite}`],
+    [`${t("gear_plate")} · ${t("tier_common")}/${t("tier_rare")}/${t("tier_elite")}`, `${tg.plate.common}/${tg.plate.rare}/${tg.plate.elite}`],
+    [`${t("gear_array")} · ${t("tier_common")}/${t("tier_rare")}/${t("tier_elite")}`, `${tg.array.common}/${tg.array.rare}/${tg.array.elite}`],
   ];
   wrap.innerHTML = "";
   rows.forEach(([k, v]) => {
@@ -1166,10 +1320,12 @@ function increaseAttackCount(targetId) {
 
 function getGearBonus() {
   const gear = state.user.gear || { blade: 0, plate: 0, array: 0 };
+  const tg = state.user.tierGear || defaultUser().tierGear;
+  const tierWeight = (slot) => tg[slot].common * 1 + tg[slot].rare * 3 + tg[slot].elite * 6;
   return {
-    attack: gear.blade * 6,
-    defense: gear.plate * 6,
-    intel: gear.array * 6,
+    attack: gear.blade * 6 + tierWeight("blade"),
+    defense: gear.plate * 6 + tierWeight("plate"),
+    intel: gear.array * 6 + tierWeight("array"),
   };
 }
 
@@ -1180,6 +1336,21 @@ function getClanAssistBonus(target) {
   const memberBoost = Math.min(20, (state.councilMemberCount || 0) * 2);
   const total = treasuryBoost + memberBoost;
   return { value: total, active: total > 0 };
+}
+
+function rollPvpDrop() {
+  const r = Math.random();
+  let tier = null;
+  if (r < 0.5) tier = "common";
+  else if (r < 0.75) tier = "rare";
+  else if (r < 0.85) tier = "elite";
+  if (!tier) return null;
+
+  const slots = ["blade", "plate", "array"];
+  const slot = slots[Math.floor(Math.random() * slots.length)];
+  state.user.tierGear = state.user.tierGear || defaultUser().tierGear;
+  state.user.tierGear[slot][tier] += 1;
+  return { slot, tier };
 }
 
 async function applyTargetDamage(target, deltaPower) {
@@ -1216,10 +1387,14 @@ async function resolvePvpStrike(target) {
     state.user.power += 10;
     await applyTargetDamage(target, -12);
     increaseAttackCount(target.player_id);
+    const drop = rollPvpDrop();
     const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
     const farm = repeated ? ` ${t("strike_farmed")}` : "";
     const assist = clanAssist.active ? ` ${t("clan_assist_note")}` : "";
-    return `${t("pvp_win")} ${target.commander} (+${loot}).${warning}${farm}${assist}`;
+    const dropText = drop
+      ? ` ${t("drop_found")}: ${t(`gear_${drop.slot}`)} ${t(`tier_${drop.tier}`)}.`
+      : ` ${t("drop_none")}`;
+    return `${t("pvp_win")} ${target.commander} (+${loot}).${warning}${farm}${assist}${dropText}`;
   }
   if (diff < -30) {
     state.user.power = Math.max(0, state.user.power - 10);
@@ -1409,6 +1584,7 @@ async function refreshWorldPanels() {
     state.feed = fd.data || [];
     await loadCouncilInfo();
     await loadSeasonArchive();
+    await loadWarTargets();
     return;
   }
   tickLocalWorld();
@@ -1417,13 +1593,16 @@ async function refreshWorldPanels() {
   state.feed = [...world.actions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 12);
   state.seasonArchive = [...(world.seasonArchive || [])].sort((a, b) => b.season_number - a.season_number);
   loadLocalCouncilInfo();
+  state.warTargets = [...(world.warTargets || [])]
+    .filter((w) => !state.user.code || w.council_code === state.user.code)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
 function getLocalWorld() {
   try {
-    return JSON.parse(localStorage.getItem(LOCAL_WORLD_KEY)) || { players: [], actions: [], councils: [], members: [], seasonArchive: [], lastSim: Date.now() };
+    return JSON.parse(localStorage.getItem(LOCAL_WORLD_KEY)) || { players: [], actions: [], councils: [], members: [], warTargets: [], seasonArchive: [], lastSim: Date.now() };
   } catch {
-    return { players: [], actions: [], councils: [], members: [], seasonArchive: [], lastSim: Date.now() };
+    return { players: [], actions: [], councils: [], members: [], warTargets: [], seasonArchive: [], lastSim: Date.now() };
   }
 }
 
@@ -1636,14 +1815,22 @@ async function doMarket(type) {
 
 async function doCityUpgrade() {
   const log = document.getElementById("city-log");
-  const needCredits = state.user.cityTier * 350;
-  const needAlloys = state.user.cityTier * 120;
-  if (state.user.credits < needCredits || state.user.alloys < needAlloys) {
-    log.textContent = `${t("city_upgrade_fail")} (${needCredits}/${needAlloys})`;
+  const next = getNextCityStage();
+  if (!next) {
+    log.textContent = t("city_max_reached");
     return;
   }
-  state.user.credits -= needCredits;
-  state.user.alloys -= needAlloys;
+  if (
+    state.user.power < next.needPower ||
+    state.user.intel < next.needIntel ||
+    state.user.credits < next.costCredits ||
+    state.user.alloys < next.costAlloys
+  ) {
+    log.textContent = t("city_upgrade_fail");
+    return;
+  }
+  state.user.credits -= next.costCredits;
+  state.user.alloys -= next.costAlloys;
   state.user.cityTier += 1;
   log.textContent = t("city_upgrade_done");
   saveUser();
@@ -1824,6 +2011,63 @@ async function loadSeasonArchive() {
   state.seasonArchive = world.seasonArchive || [];
 }
 
+async function loadWarTargets() {
+  if (!state.user.code) {
+    state.warTargets = [];
+    return;
+  }
+  if (backend.mode === "supabase") {
+    const { data } = await backend.client
+      .from("world_war_targets")
+      .select("id,council_code,target_player_id,target_commander,assigned_to,created_at")
+      .eq("council_code", state.user.code)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    state.warTargets = data || [];
+    return;
+  }
+  const world = getLocalWorld();
+  state.warTargets = (world.warTargets || []).filter((w) => w.council_code === state.user.code);
+}
+
+async function addWarTarget(targetPlayerId, assignedTo) {
+  const log = document.getElementById("social-log");
+  if (!state.user.code) {
+    log.textContent = t("no_council");
+    return;
+  }
+  if (!["leader", "officer"].includes(state.councilRole)) {
+    log.textContent = t("war_denied");
+    return;
+  }
+  const target = state.leaderboard.find((p) => p.player_id === targetPlayerId);
+  if (!target) {
+    log.textContent = t("no_target");
+    return;
+  }
+
+  const payload = {
+    council_code: state.user.code,
+    target_player_id: target.player_id,
+    target_commander: target.commander || "-",
+    assigned_to: assignedTo || null,
+    created_at: new Date().toISOString(),
+  };
+
+  if (backend.mode === "supabase") {
+    await backend.client.from("world_war_targets").insert(payload);
+  } else {
+    const world = getLocalWorld();
+    world.warTargets = world.warTargets || [];
+    world.warTargets.push({ id: crypto.randomUUID(), ...payload });
+    world.warTargets = world.warTargets.slice(-50);
+    saveLocalWorld(world);
+  }
+  log.textContent = t("war_added");
+  await loadWarTargets();
+  refreshUI();
+}
+
 async function runSeasonResetIfNeeded() {
   if (getSeasonDay() <= SEASON_LENGTH_DAYS) return;
 
@@ -1972,6 +2216,11 @@ document.addEventListener("click", async (e) => {
   if (action === "auth-google") await doGoogleLogin();
   if (action === "shop") await doShop(target.dataset.item, target.dataset.mode);
   if (action === "workers-save") await saveWorkers();
+  if (action === "war-add") {
+    const targetId = document.getElementById("warTargetSelect")?.value;
+    const assigned = document.getElementById("warAssignInput")?.value?.trim();
+    await addWarTarget(targetId, assigned);
+  }
 });
 
 document.getElementById("lang").addEventListener("change", (e) => {
@@ -2011,6 +2260,7 @@ document.getElementById("create-clan-form").addEventListener("submit", async (e)
   saveUser();
   await syncPresence();
   await loadCouncilInfo();
+  await loadWarTargets();
   refreshUI();
 });
 
@@ -2033,6 +2283,7 @@ document.getElementById("join-clan-form").addEventListener("submit", async (e) =
   saveUser();
   await syncPresence();
   await loadCouncilInfo();
+  await loadWarTargets();
   refreshUI();
 });
 

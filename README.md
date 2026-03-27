@@ -75,6 +75,8 @@ Site URL:
 - Council treasury + role permissions (`leader`, `officer`, `member`).
 - Automatic season rollover with archived leaderboard snapshots.
 - Equipment shop (buy/sell) with combat stat effects.
+- Tiered gear drops from PvP (`common`, `rare`, `elite`) with weighted chances.
 - Worker allocation panel that changes passive resource production.
-- Council ranking panel and clan-assist bonus integration in battles.
+- Council ranking panel, clan-assist combat bonus, and shared war room target board.
+- City-to-city progression gates with unlock requirements and production multipliers.
 - Onboarding tooltip hints across main screens.

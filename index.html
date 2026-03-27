@@ -292,6 +292,10 @@
           <p id="city-bonus" class="big"></p>
         </article>
       </div>
+      <article class="card">
+        <h3 data-i18n="city_gate_title"></h3>
+        <div id="city-reqs" class="table-list"></div>
+      </article>
       <p class="screen-sub" data-i18n="city_upgrade_text"></p>
       <button class="btn btn-secondary" data-action="upgrade-city" data-i18n="city_upgrade"></button>
       <p class="status" id="city-log"></p>
@@ -330,6 +334,16 @@
       <article class="card">
         <h3 data-i18n="clan_rankings_title"></h3>
         <div id="clan-rankings" class="table-list"></div>
+      </article>
+      <article class="card">
+        <h3 data-i18n="war_room_title"></h3>
+        <p class="screen-sub" data-i18n="war_room_text"></p>
+        <div class="row">
+          <select id="warTargetSelect"></select>
+          <input id="warAssignInput" data-i18n-placeholder="war_assign_placeholder" placeholder="Commander">
+          <button class="btn btn-secondary" data-action="war-add" data-i18n="war_add"></button>
+        </div>
+        <div id="war-room-list" class="table-list"></div>
       </article>
       <p class="status" id="social-log"></p>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
