@@ -43,6 +43,7 @@ window.GAME_CONFIG = {
 Notes:
 - This uses only anon public credentials (safe for frontend usage).
 - If no backend is configured, the app automatically falls back to local simulation.
+- Re-run `supabase-schema.sql` after updates to ensure new tables/columns exist.
 
 ## Deploy to GitHub Pages
 
@@ -70,4 +71,7 @@ Site URL:
 
 - Personal profile and progression data in browser local storage.
 - Shared live leaderboard/feed via Supabase when configured.
+- PvP strike resolution against real leaderboard targets.
+- Council treasury + role permissions (`leader`, `officer`, `member`).
+- Automatic season rollover with archived leaderboard snapshots.
 - Onboarding tooltip hints across main screens.

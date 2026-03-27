@@ -171,6 +171,19 @@
 
       <div class="cards two">
         <article class="card">
+          <h3 data-i18n="dash_economy"></h3>
+          <p data-i18n="dash_economy_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="economy" data-i18n="open_economy"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="dash_city"></h3>
+          <p data-i18n="dash_city_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="city" data-i18n="open_city"></button>
+        </article>
+      </div>
+
+      <div class="cards two">
+        <article class="card">
           <h3 data-i18n="live_leaderboard"></h3>
           <p class="screen-sub" data-i18n="live_leaderboard_sub"></p>
           <div id="leaderboard" class="table-list"></div>
@@ -186,6 +199,12 @@
 
     <section class="screen" id="actions">
       <h2 data-i18n="actions_title"></h2>
+      <div class="card action-meta">
+        <label>
+          <span data-i18n="target_player"></span>
+          <select id="actionTargetSelect"></select>
+        </label>
+      </div>
       <div class="cards three">
         <button class="action-card" data-action="turn" data-type="scout">
           <strong data-i18n="action_scout"></strong>
@@ -204,18 +223,78 @@
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
 
+    <section class="screen" id="economy">
+      <h2 data-i18n="economy_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="bank_title"></h3>
+          <p class="screen-sub" data-i18n="bank_text"></p>
+          <div class="row">
+            <button class="btn btn-secondary" data-action="bank" data-type="deposit" data-i18n="bank_deposit"></button>
+            <button class="btn btn-secondary" data-action="bank" data-type="withdraw" data-i18n="bank_withdraw"></button>
+          </div>
+        </article>
+        <article class="card">
+          <h3 data-i18n="market_title"></h3>
+          <p class="screen-sub" data-i18n="market_text"></p>
+          <div class="row">
+            <button class="btn btn-secondary" data-action="market" data-type="buy-supplies" data-i18n="market_buy_supplies"></button>
+            <button class="btn btn-secondary" data-action="market" data-type="sell-alloys" data-i18n="market_sell_alloys"></button>
+          </div>
+        </article>
+      </div>
+      <p class="status" id="economy-log"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="city">
+      <h2 data-i18n="city_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="city_tier_label"></h3>
+          <p id="city-tier" class="big"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="city_bonus_label"></h3>
+          <p id="city-bonus" class="big"></p>
+        </article>
+      </div>
+      <p class="screen-sub" data-i18n="city_upgrade_text"></p>
+      <button class="btn btn-secondary" data-action="upgrade-city" data-i18n="city_upgrade"></button>
+      <p class="status" id="city-log"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
     <section class="screen" id="social">
       <h2 data-i18n="social_title"></h2>
       <div class="cards two">
         <article class="card">
           <h3 data-i18n="social_ops"></h3>
           <p data-i18n="social_ops_text"></p>
+          <div class="row-item">
+            <span data-i18n="council_role_label"></span>
+            <span id="council-role" class="minor">-</span>
+          </div>
+          <div class="row-item">
+            <span data-i18n="council_treasury_label"></span>
+            <span id="council-treasury" class="minor">0</span>
+          </div>
+          <div class="row">
+            <button class="btn btn-secondary" data-action="council-treasury" data-type="deposit" data-i18n="council_deposit"></button>
+            <button class="btn btn-secondary" data-action="council-treasury" data-type="withdraw" data-i18n="council_withdraw"></button>
+          </div>
         </article>
         <article class="card">
           <h3 data-i18n="social_chat"></h3>
           <p data-i18n="social_chat_text"></p>
+          <label>
+            <span data-i18n="promote_member_label"></span>
+            <input id="promoteMember" data-i18n-placeholder="promote_member_placeholder" placeholder="Member name">
+          </label>
+          <button class="btn btn-secondary" data-action="promote-member" data-i18n="promote_member"></button>
         </article>
       </div>
+      <p class="status" id="social-log"></p>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
 
@@ -231,6 +310,10 @@
           <p id="season-value" class="big"></p>
         </article>
       </div>
+      <article class="card">
+        <h3 data-i18n="season_archive_title"></h3>
+        <div id="season-archive" class="table-list"></div>
+      </article>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
   </main>

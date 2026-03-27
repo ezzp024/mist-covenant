@@ -213,6 +213,10 @@ h2 {
   margin-bottom: 10px;
 }
 
+.action-meta {
+  margin-bottom: 12px;
+}
+
 .form {
   display: grid;
   gap: 12px;
@@ -336,6 +340,7 @@ select {
 .row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 

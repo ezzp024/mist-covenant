@@ -1,6 +1,7 @@
 const TICK_MS = 15 * 60 * 1000;
 const MAX_COMMAND_POINTS = 24;
 const LOCAL_WORLD_KEY = "mist-world";
+const SEASON_LENGTH_DAYS = 90;
 
 const i18n = {
   he: {
@@ -61,14 +62,22 @@ const i18n = {
     dash_social_text: "תאם פעולות מועצה, הקצה תפקידים ותכנן מהלכים משותפים.",
     dash_progress: "התקדמות עונתית",
     dash_progress_text: "עקוב אחרי דירוג, עוצמה אישית וקצב ההתקדמות שלך.",
+    dash_economy: "כלכלה ובנק",
+    dash_economy_text: "נהל הפקדות והמרות שוק כדי לשמור יציבות לאורך העונה.",
+    dash_city: "פיתוח עיר",
+    dash_city_text: "העלה שכבת עיר לקבלת בונוס ייצור רחב יותר.",
     open_actions: "פתח פעולות",
     open_social: "פתח חברתי",
     open_progress: "פתח התקדמות",
+    open_economy: "פתח כלכלה",
+    open_city: "פתח עיר",
     live_leaderboard: "דירוג חי",
     live_leaderboard_sub: "שחקנים מחוברים (מ- Supabase או סימולציה מקומית).",
     live_feed: "פיד עולם",
     live_feed_sub: "אירועי תורות אחרונים של שחקנים.",
     actions_title: "פעולות תור",
+    target_player: "שחקן יעד (אופציונלי)",
+    target_placeholder: "לדוגמה: Mira",
     action_scout: "סיור מודיעיני",
     action_strike: "פשיטה טקטית",
     action_train: "אימון מומחים",
@@ -78,9 +87,17 @@ const i18n = {
     social_title: "חברה ומועצות",
     social_ops: "מבצעי מועצה",
     social_ops_text: "תיאום מטרות בין חברי המועצה מעניק בונוס השפעה עונתי.",
+    council_role_label: "התפקיד שלך",
+    council_treasury_label: "אוצר מועצה",
+    council_deposit: "הפקד לאוצר",
+    council_withdraw: "משוך מהאוצר",
+    promote_member_label: "קדם חבר (לידי קצין)",
+    promote_member_placeholder: "שם מפקד",
+    promote_member: "קדם",
     social_chat: "יומן תיאום",
     social_chat_text: "רשום החלטות תקיפה וכלכלה כדי לשמור רצף עבודה קבוצתי.",
     progress_title: "מסכי התקדמות",
+    season_archive_title: "ארכיון עונות",
     rank_label: "דירוג משוער",
     season_label: "יום בעונה",
     clan_created: "המועצה נוצרה בהצלחה.",
@@ -92,6 +109,47 @@ const i18n = {
     log_scout: "הסיור הצליח: נוספו מודיעין והשפעה.",
     log_strike: "הפשיטה הסתיימה: רווחת אשראי, אך צרכת אספקה.",
     log_train: "האימון הסתיים: יעילות הכוחות עלתה.",
+    economy_title: "כלכלה, בנק ושוק",
+    bank_title: "בנק עירוני",
+    bank_text: "הפקד אשראי לביטחון וצבור ריבית פסיבית במחזורי זמן.",
+    bank_deposit: "הפקד 200",
+    bank_withdraw: "משוך 200",
+    market_title: "שוק אספקה",
+    market_text: "המר סגסוגת ואשראי לפי צרכי הקרב הנוכחיים.",
+    market_buy_supplies: "קנה אספקה",
+    market_sell_alloys: "מכור סגסוגת",
+    city_title: "שכבת עיר",
+    city_tier_label: "שכבה נוכחית",
+    city_bonus_label: "בונוס ייצור",
+    city_upgrade_text: "שדרוג דורש אשראי וסגסוגת, ומגדיל בונוס משאבים.",
+    city_upgrade: "שדרג עיר",
+    bank_low_credits: "אין מספיק אשראי להפקדה.",
+    bank_low_bank: "אין מספיק יתרה בבנק.",
+    bank_deposit_done: "הפקדה הושלמה. היתרה בבנק עלתה.",
+    bank_withdraw_done: "משיכה הושלמה. האשראי זמין לפעולות.",
+    market_buy_done: "רכישת אספקה בוצעה.",
+    market_sell_done: "מכירת סגסוגת בוצעה.",
+    market_low_credits: "אין מספיק אשראי לרכישה.",
+    market_low_alloys: "אין מספיק סגסוגת למכירה.",
+    city_upgrade_done: "שדרוג עיר הושלם. בונוס הייצור עלה.",
+    city_upgrade_fail: "אין מספיק משאבים לשדרוג.",
+    target_none: "ללא יעד",
+    pvp_win: "ניצחון בקרב מול",
+    pvp_loss: "הפסד בקרב מול",
+    pvp_draw: "קרב שקול מול",
+    no_target: "לא נבחר יעד.",
+    no_council: "יש להצטרף למועצה כדי לבצע פעולה זו.",
+    treasury_deposit_done: "ההפקדה לאוצר הושלמה.",
+    treasury_withdraw_done: "המשיכה מאוצר המועצה הושלמה.",
+    treasury_insufficient: "אין מספיק יתרה לביצוע הפעולה.",
+    treasury_denied: "אין הרשאה לפעולה זו.",
+    role_leader: "מנהיג",
+    role_officer: "קצין",
+    role_member: "חבר",
+    promote_done: "החבר קודם בהצלחה.",
+    promote_denied: "רק מנהיג יכול לקדם חברים.",
+    member_not_found: "לא נמצא חבר בשם זה במועצה.",
+    season_reset_done: "עונה חדשה התחילה. דירוגי העונה נשמרו בארכיון.",
     backend_title: "חיבור שירות משותף",
     backend_text: "כדי לאפשר סימולציה מרובת שחקנים אמיתית, חבר פרויקט Supabase חינמי.",
     backend_url: "Supabase URL",
@@ -108,6 +166,7 @@ const i18n = {
     stat_alloys: "סגסוגת",
     stat_intel: "מודיעין",
     stat_influence: "השפעה",
+    stat_bank: "יתרת בנק",
     tips_next: "טיפ הבא",
     tips_skip: "סגור הדרכה",
     tip_landing_t: "ברוך הבא",
@@ -124,6 +183,10 @@ const i18n = {
     tip_dashboard_b: "בדוק משאבים, דירוג ופיד עולם לפני כל מהלך.",
     tip_actions_t: "ניהול תורות",
     tip_actions_b: "בצע פעולות רק כשיש מספיק נקודות פיקוד ומשאבים תומכים.",
+    tip_economy_t: "כלכלה יציבה",
+    tip_economy_b: "השתמש בבנק ובשוק כדי למנוע מחסור לפני מהלכי תקיפה.",
+    tip_city_t: "צמיחה ארוכת טווח",
+    tip_city_b: "שדרוג שכבת עיר מגדיל בונוס ייצור ומאיץ התקדמות.",
   },
   en: {
     nav_landing: "Landing",
@@ -183,14 +246,22 @@ const i18n = {
     dash_social_text: "Coordinate council operations and assign team roles.",
     dash_progress: "Season Progress",
     dash_progress_text: "Track your rank, power, and pace this season.",
+    dash_economy: "Economy & Bank",
+    dash_economy_text: "Use deposits and market exchanges to keep your season stable.",
+    dash_city: "City Growth",
+    dash_city_text: "Upgrade your city tier for stronger production bonuses.",
     open_actions: "Open Actions",
     open_social: "Open Social",
     open_progress: "Open Progress",
+    open_economy: "Open Economy",
+    open_city: "Open City",
     live_leaderboard: "Live Leaderboard",
     live_leaderboard_sub: "Connected players (from Supabase or local simulation).",
     live_feed: "World Feed",
     live_feed_sub: "Latest turn events from active players.",
     actions_title: "Turn Actions",
+    target_player: "Target player (optional)",
+    target_placeholder: "Example: Mira",
     action_scout: "Intel Sweep",
     action_strike: "Tactical Raid",
     action_train: "Specialist Training",
@@ -200,9 +271,17 @@ const i18n = {
     social_title: "Social and Councils",
     social_ops: "Council Operations",
     social_ops_text: "Aligned targets grant stronger seasonal influence.",
+    council_role_label: "Your role",
+    council_treasury_label: "Council treasury",
+    council_deposit: "Deposit to treasury",
+    council_withdraw: "Withdraw from treasury",
+    promote_member_label: "Promote member (to officer)",
+    promote_member_placeholder: "Commander name",
+    promote_member: "Promote",
     social_chat: "Coordination Log",
     social_chat_text: "Capture battle and economy decisions to keep your group aligned.",
     progress_title: "Progression Screens",
+    season_archive_title: "Season Archive",
     rank_label: "Estimated Rank",
     season_label: "Season Day",
     clan_created: "Council created successfully.",
@@ -214,6 +293,47 @@ const i18n = {
     log_scout: "Sweep complete: intel and influence increased.",
     log_strike: "Raid complete: credits gained, supplies consumed.",
     log_train: "Training complete: combat efficiency increased.",
+    economy_title: "Economy, Bank, and Market",
+    bank_title: "City Bank",
+    bank_text: "Deposit credits for safety and passive interest over time.",
+    bank_deposit: "Deposit 200",
+    bank_withdraw: "Withdraw 200",
+    market_title: "Supply Market",
+    market_text: "Convert alloys and credits based on current strategic needs.",
+    market_buy_supplies: "Buy Supplies",
+    market_sell_alloys: "Sell Alloys",
+    city_title: "City Tier",
+    city_tier_label: "Current Tier",
+    city_bonus_label: "Production Bonus",
+    city_upgrade_text: "Upgrading costs credits and alloys, then boosts resource gain.",
+    city_upgrade: "Upgrade City",
+    bank_low_credits: "Not enough credits to deposit.",
+    bank_low_bank: "Not enough bank balance.",
+    bank_deposit_done: "Deposit complete. Bank balance increased.",
+    bank_withdraw_done: "Withdraw complete. Credits are now available.",
+    market_buy_done: "Supplies purchase complete.",
+    market_sell_done: "Alloy sale complete.",
+    market_low_credits: "Not enough credits to buy supplies.",
+    market_low_alloys: "Not enough alloys to sell.",
+    city_upgrade_done: "City upgraded. Production bonus increased.",
+    city_upgrade_fail: "Not enough resources to upgrade city.",
+    target_none: "No target",
+    pvp_win: "Battle victory against",
+    pvp_loss: "Battle lost against",
+    pvp_draw: "Battle draw against",
+    no_target: "No target selected.",
+    no_council: "Join a council to perform this action.",
+    treasury_deposit_done: "Treasury deposit completed.",
+    treasury_withdraw_done: "Treasury withdrawal completed.",
+    treasury_insufficient: "Insufficient balance for this action.",
+    treasury_denied: "You do not have permission for this action.",
+    role_leader: "Leader",
+    role_officer: "Officer",
+    role_member: "Member",
+    promote_done: "Member promoted successfully.",
+    promote_denied: "Only leaders can promote members.",
+    member_not_found: "Member not found in your council.",
+    season_reset_done: "New season started. Previous season rankings archived.",
     backend_title: "Shared Service Connection",
     backend_text: "Connect a free Supabase project for real shared multiplayer simulation.",
     backend_url: "Supabase URL",
@@ -230,6 +350,7 @@ const i18n = {
     stat_alloys: "Alloys",
     stat_intel: "Intel",
     stat_influence: "Influence",
+    stat_bank: "Bank",
     tips_next: "Next Tip",
     tips_skip: "Close",
     tip_landing_t: "Welcome",
@@ -246,6 +367,10 @@ const i18n = {
     tip_dashboard_b: "Review resources, rank, and live feed before acting.",
     tip_actions_t: "Turn Budget",
     tip_actions_b: "Only fire actions when you have command points and support resources.",
+    tip_economy_t: "Economy Control",
+    tip_economy_b: "Use bank and market tools to avoid shortages before combat cycles.",
+    tip_city_t: "Long-Term Growth",
+    tip_city_b: "City tier upgrades raise production and accelerate progression.",
   },
   ru: {
     nav_landing: "Главная",
@@ -305,14 +430,22 @@ const i18n = {
     dash_social_text: "Координируйте операции совета и распределение ролей.",
     dash_progress: "Прогресс сезона",
     dash_progress_text: "Следите за рангом, мощью и темпом роста.",
+    dash_economy: "Экономика и банк",
+    dash_economy_text: "Используйте депозиты и рынок для стабильной экономики сезона.",
+    dash_city: "Рост города",
+    dash_city_text: "Повышайте уровень города для усиления добычи.",
     open_actions: "Открыть действия",
     open_social: "Открыть социал",
     open_progress: "Открыть прогресс",
+    open_economy: "Открыть экономику",
+    open_city: "Открыть город",
     live_leaderboard: "Живой рейтинг",
     live_leaderboard_sub: "Подключенные игроки (Supabase или локальная симуляция).",
     live_feed: "Лента мира",
     live_feed_sub: "Последние события ходов игроков.",
     actions_title: "Действия хода",
+    target_player: "Цель (необязательно)",
+    target_placeholder: "Например: Mira",
     action_scout: "Разведка",
     action_strike: "Тактический рейд",
     action_train: "Подготовка специалистов",
@@ -322,9 +455,17 @@ const i18n = {
     social_title: "Социальная система",
     social_ops: "Операции совета",
     social_ops_text: "Согласованные цели усиливают сезонное влияние.",
+    council_role_label: "Ваша роль",
+    council_treasury_label: "Казна совета",
+    council_deposit: "Внести в казну",
+    council_withdraw: "Снять из казны",
+    promote_member_label: "Повысить участника (до офицера)",
+    promote_member_placeholder: "Имя командира",
+    promote_member: "Повысить",
     social_chat: "Журнал координации",
     social_chat_text: "Фиксируйте боевые и экономические решения команды.",
     progress_title: "Экраны прогресса",
+    season_archive_title: "Архив сезонов",
     rank_label: "Оценочный ранг",
     season_label: "День сезона",
     clan_created: "Совет успешно создан.",
@@ -336,6 +477,47 @@ const i18n = {
     log_scout: "Разведка завершена: разведданные и влияние выросли.",
     log_strike: "Рейд завершен: кредиты получены, припасы потрачены.",
     log_train: "Тренировка завершена: эффективность выросла.",
+    economy_title: "Экономика, банк и рынок",
+    bank_title: "Городской банк",
+    bank_text: "Депозит защищает средства и дает пассивный прирост.",
+    bank_deposit: "Депозит 200",
+    bank_withdraw: "Снять 200",
+    market_title: "Рынок снабжения",
+    market_text: "Обменивайте сплав и кредиты под текущие задачи.",
+    market_buy_supplies: "Купить припасы",
+    market_sell_alloys: "Продать сплав",
+    city_title: "Уровень города",
+    city_tier_label: "Текущий уровень",
+    city_bonus_label: "Бонус добычи",
+    city_upgrade_text: "Улучшение требует кредиты и сплав, затем повышает добычу.",
+    city_upgrade: "Улучшить город",
+    bank_low_credits: "Недостаточно кредитов для депозита.",
+    bank_low_bank: "Недостаточно средств в банке.",
+    bank_deposit_done: "Депозит выполнен. Баланс банка вырос.",
+    bank_withdraw_done: "Снятие выполнено. Кредиты доступны.",
+    market_buy_done: "Покупка припасов завершена.",
+    market_sell_done: "Продажа сплава завершена.",
+    market_low_credits: "Недостаточно кредитов для покупки.",
+    market_low_alloys: "Недостаточно сплава для продажи.",
+    city_upgrade_done: "Город улучшен. Бонус добычи вырос.",
+    city_upgrade_fail: "Недостаточно ресурсов для улучшения.",
+    target_none: "Без цели",
+    pvp_win: "Победа в бою против",
+    pvp_loss: "Поражение в бою против",
+    pvp_draw: "Ничья в бою против",
+    no_target: "Цель не выбрана.",
+    no_council: "Вступите в совет, чтобы выполнить это действие.",
+    treasury_deposit_done: "Пополнение казны выполнено.",
+    treasury_withdraw_done: "Снятие из казны выполнено.",
+    treasury_insufficient: "Недостаточно средств для операции.",
+    treasury_denied: "Недостаточно прав для этой операции.",
+    role_leader: "Лидер",
+    role_officer: "Офицер",
+    role_member: "Участник",
+    promote_done: "Участник успешно повышен.",
+    promote_denied: "Только лидер может повышать участников.",
+    member_not_found: "Участник с таким именем не найден.",
+    season_reset_done: "Начался новый сезон. Результаты прошлой кампании сохранены.",
     backend_title: "Подключение общего сервиса",
     backend_text: "Подключите бесплатный Supabase для общей мультиплеерной симуляции.",
     backend_url: "Supabase URL",
@@ -352,6 +534,7 @@ const i18n = {
     stat_alloys: "Сплав",
     stat_intel: "Разведка",
     stat_influence: "Влияние",
+    stat_bank: "Банк",
     tips_next: "След. совет",
     tips_skip: "Закрыть",
     tip_landing_t: "Добро пожаловать",
@@ -368,6 +551,10 @@ const i18n = {
     tip_dashboard_b: "Проверяйте ресурсы, ранг и ленту перед действиями.",
     tip_actions_t: "Бюджет хода",
     tip_actions_b: "Запускайте действия только при достаточных очках и ресурсах.",
+    tip_economy_t: "Контроль экономики",
+    tip_economy_b: "Банк и рынок помогают избегать дефицита перед боями.",
+    tip_city_t: "Долгий рост",
+    tip_city_b: "Уровень города повышает добычу и ускоряет прогресс.",
   },
 };
 
@@ -407,6 +594,9 @@ const state = {
   backendStatus: "",
   leaderboard: [],
   feed: [],
+  seasonArchive: [],
+  councilInfo: null,
+  councilRole: "member",
   tipsDisabled: localStorage.getItem("mist-tips-disabled") === "1",
   tipShown: {},
 };
@@ -429,13 +619,17 @@ function defaultUser() {
     intel: 75,
     influence: 20,
     power: 110,
+    bankGold: 0,
+    cityTier: 1,
+    seasonNumber: 1,
     seasonStart: Date.now(),
   };
 }
 
 function loadUser() {
   try {
-    return JSON.parse(localStorage.getItem("mist-user")) || defaultUser();
+    const parsed = JSON.parse(localStorage.getItem("mist-user"));
+    return parsed ? { ...defaultUser(), ...parsed } : defaultUser();
   } catch {
     return defaultUser();
   }
@@ -465,6 +659,9 @@ function translatePage() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = t(el.dataset.i18n);
   });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.setAttribute("placeholder", t(el.dataset.i18nPlaceholder));
+  });
 }
 
 function show(step) {
@@ -481,6 +678,11 @@ function regen() {
   const gained = Math.floor((now - state.user.lastTick) / TICK_MS);
   if (gained > 0) {
     state.user.commandPoints = Math.min(MAX_COMMAND_POINTS, state.user.commandPoints + gained);
+    const bonus = 1 + getCityBonus() / 100;
+    state.user.credits += Math.floor(70 * gained * bonus);
+    state.user.supplies += Math.floor(60 * gained * bonus);
+    state.user.alloys += Math.floor(35 * gained * bonus);
+    state.user.bankGold += Math.floor(state.user.bankGold * 0.01 * gained);
     state.user.lastTick += gained * TICK_MS;
     saveUser();
   }
@@ -500,6 +702,10 @@ function getRank() {
   return 140;
 }
 
+function getCityBonus() {
+  return (state.user.cityTier - 1) * 25;
+}
+
 function openSettings(open) {
   const panel = document.getElementById("settings-panel");
   panel.classList.toggle("open", open);
@@ -515,6 +721,8 @@ function tipsForStep(step) {
     clan: ["tip_clan_t", "tip_clan_b"],
     dashboard: ["tip_dashboard_t", "tip_dashboard_b"],
     actions: ["tip_actions_t", "tip_actions_b"],
+    economy: ["tip_economy_t", "tip_economy_b"],
+    city: ["tip_city_t", "tip_city_b"],
   };
   return map[step] || null;
 }
@@ -549,8 +757,15 @@ function refreshUI() {
   renderStats();
   document.getElementById("rank-value").textContent = `#${getRank()}`;
   document.getElementById("season-value").textContent = String(getSeasonDay());
+  const cityTier = document.getElementById("city-tier");
+  if (cityTier) cityTier.textContent = String(state.user.cityTier);
+  const cityBonus = document.getElementById("city-bonus");
+  if (cityBonus) cityBonus.textContent = `+${getCityBonus()}%`;
   renderLeaderboard();
   renderFeed();
+  renderTargetOptions();
+  renderSocialPanel();
+  renderSeasonArchive();
 }
 
 function renderStats() {
@@ -559,6 +774,7 @@ function renderStats() {
   const rows = [
     [t("stat_cp"), state.user.commandPoints],
     [t("stat_credits"), state.user.credits],
+    [t("stat_bank"), state.user.bankGold],
     [t("stat_supplies"), state.user.supplies],
     [t("stat_alloys"), state.user.alloys],
     [t("stat_intel"), state.user.intel],
@@ -630,6 +846,52 @@ function renderFeed() {
   });
 }
 
+function renderTargetOptions() {
+  const select = document.getElementById("actionTargetSelect");
+  if (!select) return;
+  const current = select.value;
+  const options = state.leaderboard.filter((row) => row.player_id !== state.user.id);
+  select.innerHTML = `<option value="">${t("target_none")}</option>`;
+  options.forEach((row) => {
+    const option = document.createElement("option");
+    option.value = row.player_id;
+    option.textContent = `${row.commander || "-"} (#${row.power || 0})`;
+    select.appendChild(option);
+  });
+  if ([...select.options].some((x) => x.value === current)) {
+    select.value = current;
+  }
+}
+
+function renderSocialPanel() {
+  const role = document.getElementById("council-role");
+  const treasury = document.getElementById("council-treasury");
+  if (!role || !treasury) return;
+  const roleMap = {
+    leader: t("role_leader"),
+    officer: t("role_officer"),
+    member: t("role_member"),
+  };
+  role.textContent = roleMap[state.councilRole] || roleMap.member;
+  treasury.textContent = Number(state.councilInfo?.treasury || 0).toLocaleString();
+}
+
+function renderSeasonArchive() {
+  const wrap = document.getElementById("season-archive");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  if (!state.seasonArchive.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("no_data")}</span></div>`;
+    return;
+  }
+  state.seasonArchive.slice(0, 8).forEach((row) => {
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>S${row.season_number} · ${escapeHtml(row.commander)}</span><span class="minor">${row.rank_position}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -644,23 +906,71 @@ function spendPoints(cost) {
   return true;
 }
 
+function findTargetPlayer(targetId) {
+  return state.leaderboard.find((row) => row.player_id === targetId) || null;
+}
+
+async function applyTargetDamage(target, deltaPower) {
+  if (!target || !deltaPower) return;
+  if (backend.mode === "supabase") {
+    const nextPower = Math.max(0, (target.power || 0) + deltaPower);
+    await backend.client.from("world_players").update({ power: nextPower }).eq("player_id", target.player_id);
+    return;
+  }
+  const world = getLocalWorld();
+  const player = world.players.find((p) => p.player_id === target.player_id);
+  if (player) player.power = Math.max(0, (player.power || 0) + deltaPower);
+  saveLocalWorld(world);
+}
+
+async function resolvePvpStrike(target) {
+  if (!target) return t("no_target");
+  const attackScore = state.user.power + state.user.intel * 0.45 + Math.random() * 40 + getCityBonus();
+  const defenseScore = (target.power || 0) + (target.intel || 0) * 0.3 + (target.influence || 0) * 0.2 + Math.random() * 35;
+  const diff = attackScore - defenseScore;
+
+  if (diff > 30) {
+    const loot = 160 + Math.floor(Math.random() * 90);
+    state.user.credits += loot;
+    state.user.power += 10;
+    await applyTargetDamage(target, -12);
+    return `${t("pvp_win")} ${target.commander} (+${loot})`;
+  }
+  if (diff < -30) {
+    state.user.power = Math.max(0, state.user.power - 10);
+    state.user.supplies = Math.max(0, state.user.supplies - 60);
+    await applyTargetDamage(target, 4);
+    return `${t("pvp_loss")} ${target.commander}`;
+  }
+  state.user.power += 1;
+  await applyTargetDamage(target, -2);
+  return `${t("pvp_draw")} ${target.commander}`;
+}
+
 async function doAction(type) {
   const log = document.getElementById("action-log");
+  const targetId = document.getElementById("actionTargetSelect")?.value;
+  const targetPlayer = findTargetPlayer(targetId);
   const effects = {
     scout: () => {
       if (!spendPoints(2)) return t("need_points");
+      const gain = targetPlayer ? 18 : 14;
       state.user.intel += 14;
       state.user.influence += 7;
       state.user.power += 2;
-      return t("log_scout");
+      state.user.intel += gain - 14;
+      return targetPlayer ? `${t("log_scout")} [${targetPlayer.commander}]` : t("log_scout");
     },
-    strike: () => {
+    strike: async () => {
       if (!spendPoints(4)) return t("need_points");
       if (state.user.supplies < 90) return t("need_supply");
-      state.user.credits += 190;
       state.user.supplies -= 90;
-      state.user.power += 9;
-      return t("log_strike");
+      if (!targetPlayer) {
+        state.user.credits += 190;
+        state.user.power += 9;
+        return t("log_strike");
+      }
+      return resolvePvpStrike(targetPlayer);
     },
     train: () => {
       if (!spendPoints(3)) return t("need_points");
@@ -671,7 +981,7 @@ async function doAction(type) {
     },
   };
 
-  const summary = effects[type]();
+  const summary = await effects[type]();
   log.textContent = summary;
   saveUser();
   await syncPresence();
@@ -746,9 +1056,12 @@ async function syncPresence() {
       commander: state.user.commander || state.user.email || "Commander",
       faction: state.user.faction || "none",
       council: state.user.council || null,
+      council_code: state.user.code || null,
       power: state.user.power,
       intel: state.user.intel,
       influence: state.user.influence,
+      city_tier: state.user.cityTier,
+      season_number: state.user.seasonNumber,
       updated_at: new Date().toISOString(),
     };
     await backend.client.from("world_players").upsert(payload, { onConflict: "player_id" });
@@ -779,24 +1092,28 @@ async function publishWorldEvent(type, summary) {
 async function refreshWorldPanels() {
   if (backend.mode === "supabase") {
     const [lb, fd] = await Promise.all([
-      backend.client.from("world_players").select("commander,power").order("power", { ascending: false }).limit(10),
+      backend.client.from("world_players").select("player_id,commander,power,intel,influence,council").order("power", { ascending: false }).limit(10),
       backend.client.from("world_actions").select("commander,summary,created_at").order("created_at", { ascending: false }).limit(12),
     ]);
     state.leaderboard = lb.data || [];
     state.feed = fd.data || [];
+    await loadCouncilInfo();
+    await loadSeasonArchive();
     return;
   }
   tickLocalWorld();
   const world = getLocalWorld();
   state.leaderboard = [...world.players].sort((a, b) => b.power - a.power).slice(0, 10);
   state.feed = [...world.actions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 12);
+  state.seasonArchive = [...(world.seasonArchive || [])].sort((a, b) => b.season_number - a.season_number);
+  loadLocalCouncilInfo();
 }
 
 function getLocalWorld() {
   try {
-    return JSON.parse(localStorage.getItem(LOCAL_WORLD_KEY)) || { players: [], actions: [], lastSim: Date.now() };
+    return JSON.parse(localStorage.getItem(LOCAL_WORLD_KEY)) || { players: [], actions: [], councils: [], members: [], seasonArchive: [], lastSim: Date.now() };
   } catch {
-    return { players: [], actions: [], lastSim: Date.now() };
+    return { players: [], actions: [], councils: [], members: [], seasonArchive: [], lastSim: Date.now() };
   }
 }
 
@@ -811,6 +1128,8 @@ function seedLocalWorld() {
     player_id: `bot-${idx + 1}`,
     commander: name,
     power: 90 + idx * 22,
+    intel: 40 + idx * 5,
+    influence: 20 + idx * 4,
   }));
   world.actions = [
     { commander: "Astra", summary: "Performed scouting route.", created_at: new Date().toISOString() },
@@ -826,8 +1145,18 @@ function updateLocalWorldPlayer() {
   if (existing) {
     existing.commander = name;
     existing.power = state.user.power;
+    existing.intel = state.user.intel;
+    existing.influence = state.user.influence;
+    existing.council_code = state.user.code || null;
   } else {
-    world.players.push({ player_id: state.user.id, commander: name, power: state.user.power });
+    world.players.push({
+      player_id: state.user.id,
+      commander: name,
+      power: state.user.power,
+      intel: state.user.intel,
+      influence: state.user.influence,
+      council_code: state.user.code || null,
+    });
   }
   saveLocalWorld(world);
 }
@@ -859,19 +1188,306 @@ function tickLocalWorld() {
 async function createCouncil(name) {
   if (backend.mode === "supabase") {
     const code = Math.random().toString(36).slice(2, 10).toUpperCase();
-    const { error } = await backend.client.from("world_councils").insert({ council_code: code, council_name: name, leader_id: state.user.id });
+    const { error } = await backend.client.from("world_councils").insert({
+      council_code: code,
+      council_name: name,
+      leader_id: state.user.id,
+      treasury: 0,
+    });
     if (error) return null;
+    await backend.client.from("world_council_members").upsert({
+      council_code: code,
+      player_id: state.user.id,
+      commander: state.user.commander || state.user.email || "Commander",
+      role: "leader",
+    });
+    state.councilRole = "leader";
     return code;
   }
-  return Math.random().toString(36).slice(2, 10).toUpperCase();
+  const world = getLocalWorld();
+  const code = Math.random().toString(36).slice(2, 10).toUpperCase();
+  world.councils.push({ council_code: code, council_name: name, leader_id: state.user.id, treasury: 0 });
+  world.members.push({ council_code: code, player_id: state.user.id, commander: state.user.commander || "Commander", role: "leader" });
+  saveLocalWorld(world);
+  state.councilRole = "leader";
+  return code;
 }
 
 async function joinCouncil(code) {
   if (backend.mode === "supabase") {
     const { data } = await backend.client.from("world_councils").select("council_name").eq("council_code", code).single();
+    if (data?.council_name) {
+      await backend.client.from("world_council_members").upsert({
+        council_code: code,
+        player_id: state.user.id,
+        commander: state.user.commander || state.user.email || "Commander",
+        role: "member",
+      });
+      state.councilRole = "member";
+    }
     return data?.council_name || null;
   }
-  return `Council-${code.slice(0, 4).toUpperCase()}`;
+  const world = getLocalWorld();
+  const council = world.councils.find((c) => c.council_code === code);
+  if (!council) return null;
+  const member = world.members.find((m) => m.council_code === code && m.player_id === state.user.id);
+  if (!member) {
+    world.members.push({ council_code: code, player_id: state.user.id, commander: state.user.commander || "Commander", role: "member" });
+    saveLocalWorld(world);
+  }
+  state.councilRole = "member";
+  return council.council_name;
+}
+
+async function loadCouncilInfo() {
+  if (!state.user.code) {
+    state.councilInfo = null;
+    state.councilRole = "member";
+    return;
+  }
+  if (backend.mode === "supabase") {
+    const [councilRes, memberRes] = await Promise.all([
+      backend.client.from("world_councils").select("council_code,council_name,treasury").eq("council_code", state.user.code).maybeSingle(),
+      backend.client.from("world_council_members").select("role").eq("council_code", state.user.code).eq("player_id", state.user.id).maybeSingle(),
+    ]);
+    state.councilInfo = councilRes.data || null;
+    state.councilRole = memberRes.data?.role || "member";
+    return;
+  }
+  loadLocalCouncilInfo();
+}
+
+function loadLocalCouncilInfo() {
+  const world = getLocalWorld();
+  if (!state.user.code) {
+    state.councilInfo = null;
+    state.councilRole = "member";
+    return;
+  }
+  state.councilInfo = world.councils.find((c) => c.council_code === state.user.code) || null;
+  state.councilRole = world.members.find((m) => m.council_code === state.user.code && m.player_id === state.user.id)?.role || "member";
+}
+
+async function doBank(type) {
+  const log = document.getElementById("economy-log");
+  if (type === "deposit") {
+    if (state.user.credits < 200) {
+      log.textContent = t("bank_low_credits");
+      return;
+    }
+    state.user.credits -= 200;
+    state.user.bankGold += 200;
+    log.textContent = t("bank_deposit_done");
+  }
+  if (type === "withdraw") {
+    if (state.user.bankGold < 200) {
+      log.textContent = t("bank_low_bank");
+      return;
+    }
+    state.user.bankGold -= 200;
+    state.user.credits += 200;
+    log.textContent = t("bank_withdraw_done");
+  }
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+async function doMarket(type) {
+  const log = document.getElementById("economy-log");
+  if (type === "buy-supplies") {
+    if (state.user.credits < 120) {
+      log.textContent = t("market_low_credits");
+      return;
+    }
+    state.user.credits -= 120;
+    state.user.supplies += 180;
+    log.textContent = t("market_buy_done");
+  }
+  if (type === "sell-alloys") {
+    if (state.user.alloys < 50) {
+      log.textContent = t("market_low_alloys");
+      return;
+    }
+    state.user.alloys -= 50;
+    state.user.credits += 140;
+    log.textContent = t("market_sell_done");
+  }
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+async function doCityUpgrade() {
+  const log = document.getElementById("city-log");
+  const needCredits = state.user.cityTier * 350;
+  const needAlloys = state.user.cityTier * 120;
+  if (state.user.credits < needCredits || state.user.alloys < needAlloys) {
+    log.textContent = `${t("city_upgrade_fail")} (${needCredits}/${needAlloys})`;
+    return;
+  }
+  state.user.credits -= needCredits;
+  state.user.alloys -= needAlloys;
+  state.user.cityTier += 1;
+  log.textContent = t("city_upgrade_done");
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+async function doCouncilTreasury(type) {
+  const log = document.getElementById("social-log");
+  if (!state.user.code) {
+    log.textContent = t("no_council");
+    return;
+  }
+  await loadCouncilInfo();
+  if (!state.councilInfo) {
+    log.textContent = t("no_council");
+    return;
+  }
+
+  if (type === "deposit") {
+    if (state.user.credits < 100) {
+      log.textContent = t("treasury_insufficient");
+      return;
+    }
+    state.user.credits -= 100;
+    const nextTreasury = (state.councilInfo.treasury || 0) + 100;
+    await updateCouncilTreasury(nextTreasury);
+    log.textContent = t("treasury_deposit_done");
+  }
+
+  if (type === "withdraw") {
+    if (!["leader", "officer"].includes(state.councilRole)) {
+      log.textContent = t("treasury_denied");
+      return;
+    }
+    if ((state.councilInfo.treasury || 0) < 100) {
+      log.textContent = t("treasury_insufficient");
+      return;
+    }
+    state.user.credits += 100;
+    const nextTreasury = (state.councilInfo.treasury || 0) - 100;
+    await updateCouncilTreasury(nextTreasury);
+    log.textContent = t("treasury_withdraw_done");
+  }
+
+  saveUser();
+  await syncPresence();
+  await loadCouncilInfo();
+  refreshUI();
+}
+
+async function updateCouncilTreasury(nextTreasury) {
+  if (backend.mode === "supabase") {
+    await backend.client.from("world_councils").update({ treasury: nextTreasury }).eq("council_code", state.user.code);
+    return;
+  }
+  const world = getLocalWorld();
+  const council = world.councils.find((c) => c.council_code === state.user.code);
+  if (council) council.treasury = nextTreasury;
+  saveLocalWorld(world);
+}
+
+async function promoteMemberToOfficer(commanderName) {
+  const log = document.getElementById("social-log");
+  if (!state.user.code) {
+    log.textContent = t("no_council");
+    return;
+  }
+  await loadCouncilInfo();
+  if (state.councilRole !== "leader") {
+    log.textContent = t("promote_denied");
+    return;
+  }
+  if (!commanderName) {
+    log.textContent = t("member_not_found");
+    return;
+  }
+
+  if (backend.mode === "supabase") {
+    const { data } = await backend.client
+      .from("world_council_members")
+      .select("player_id")
+      .eq("council_code", state.user.code)
+      .eq("commander", commanderName)
+      .maybeSingle();
+    if (!data?.player_id) {
+      log.textContent = t("member_not_found");
+      return;
+    }
+    await backend.client
+      .from("world_council_members")
+      .update({ role: "officer" })
+      .eq("council_code", state.user.code)
+      .eq("player_id", data.player_id);
+  } else {
+    const world = getLocalWorld();
+    const member = world.members.find((m) => m.council_code === state.user.code && m.commander === commanderName);
+    if (!member) {
+      log.textContent = t("member_not_found");
+      return;
+    }
+    member.role = "officer";
+    saveLocalWorld(world);
+  }
+  log.textContent = t("promote_done");
+  await loadCouncilInfo();
+  refreshUI();
+}
+
+async function loadSeasonArchive() {
+  if (backend.mode === "supabase") {
+    const { data } = await backend.client
+      .from("world_season_archive")
+      .select("season_number,rank_position,commander")
+      .order("season_number", { ascending: false })
+      .order("rank_position", { ascending: true })
+      .limit(24);
+    state.seasonArchive = data || [];
+    return;
+  }
+  const world = getLocalWorld();
+  state.seasonArchive = world.seasonArchive || [];
+}
+
+async function runSeasonResetIfNeeded() {
+  if (getSeasonDay() <= SEASON_LENGTH_DAYS) return;
+
+  const snapshot = state.leaderboard.slice(0, 5).map((row, idx) => ({
+    season_number: state.user.seasonNumber,
+    rank_position: idx + 1,
+    commander: row.commander || "-",
+    power: row.power || 0,
+  }));
+
+  if (backend.mode === "supabase") {
+    if (snapshot.length) {
+      await backend.client.from("world_season_archive").insert(snapshot);
+    }
+    await backend.client.from("world_players").update({ power: 100, intel: 60, influence: 20 });
+  } else {
+    const world = getLocalWorld();
+    world.seasonArchive = [...(world.seasonArchive || []), ...snapshot].slice(-50);
+    world.players = world.players.map((p) => ({ ...p, power: 100, intel: 60, influence: 20 }));
+    saveLocalWorld(world);
+  }
+
+  state.user.commandPoints = 12;
+  state.user.credits = 1200;
+  state.user.supplies = 840;
+  state.user.alloys = 420;
+  state.user.intel = 75;
+  state.user.influence = 20;
+  state.user.power = 110;
+  state.user.cityTier = 1;
+  state.user.bankGold = 0;
+  state.user.seasonNumber += 1;
+  state.user.seasonStart = Date.now();
+  saveUser();
+  const log = document.getElementById("action-log");
+  if (log) log.textContent = t("season_reset_done");
 }
 
 document.addEventListener("click", async (e) => {
@@ -891,6 +1507,14 @@ document.addEventListener("click", async (e) => {
   if (action === "close-settings") openSettings(false);
   if (action === "skip-tips") hideTipsForever();
   if (action === "next-tip") document.getElementById("onboarding").classList.remove("open");
+  if (action === "bank") await doBank(target.dataset.type);
+  if (action === "market") await doMarket(target.dataset.type);
+  if (action === "upgrade-city") await doCityUpgrade();
+  if (action === "council-treasury") await doCouncilTreasury(target.dataset.type);
+  if (action === "promote-member") {
+    const commander = document.getElementById("promoteMember")?.value?.trim();
+    await promoteMemberToOfficer(commander);
+  }
 });
 
 document.getElementById("lang").addEventListener("change", (e) => {
@@ -933,6 +1557,8 @@ document.getElementById("create-clan-form").addEventListener("submit", async (e)
   status.textContent = `${t("clan_created")} ${code}`;
   saveUser();
   await syncPresence();
+  await loadCouncilInfo();
+  refreshUI();
 });
 
 document.getElementById("join-clan-form").addEventListener("submit", async (e) => {
@@ -953,6 +1579,8 @@ document.getElementById("join-clan-form").addEventListener("submit", async (e) =
   status.textContent = `${t("clan_joined")} (${code})`;
   saveUser();
   await syncPresence();
+  await loadCouncilInfo();
+  refreshUI();
 });
 
 document.getElementById("backend-form").addEventListener("submit", async (e) => {
@@ -969,12 +1597,15 @@ async function boot() {
   translatePage();
   renderFactions();
   await initBackend();
+  await loadCouncilInfo();
+  await runSeasonResetIfNeeded();
   refreshUI();
   maybeShowTip(true);
 }
 
 boot();
 setInterval(async () => {
+  await runSeasonResetIfNeeded();
   await syncPresence();
   await refreshWorldPanels();
   refreshUI();
