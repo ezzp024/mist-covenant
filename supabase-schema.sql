@@ -1,3 +1,5 @@
+-- Mist Covenant backend schema contract (frozen baseline)
+
 create table if not exists public.world_players (
   player_id text primary key,
   commander text not null,
@@ -105,4 +107,23 @@ create policy "world season archive write" on public.world_season_archive for in
 create policy "world war targets read" on public.world_war_targets for select to anon using (true);
 create policy "world war targets write" on public.world_war_targets for insert to anon with check (true);
 
-alter publication supabase_realtime add table public.world_actions;
+grant usage on schema public to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_players to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_actions to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_councils to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_council_members to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_season_archive to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.world_war_targets to anon, authenticated, service_role;
+grant usage, select on sequence public.world_actions_id_seq to anon, authenticated, service_role;
+grant usage, select on sequence public.world_season_archive_id_seq to anon, authenticated, service_role;
+grant usage, select on sequence public.world_war_targets_id_seq to anon, authenticated, service_role;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.world_actions;
+exception
+  when duplicate_object then
+    null;
+end $$;
+
+notify pgrst, 'reload schema';

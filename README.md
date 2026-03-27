@@ -53,6 +53,10 @@ Notes:
 - Google OAuth round-trip returns user to `Character` or `Dashboard` via session guard
 - Supabase write/read smoke: insert into `world_actions`, then read latest rows
 
+Run automated smoke helper:
+
+`node scripts/smoke-check.mjs`
+
 ## Deploy to GitHub Pages
 
 Deploy from branch root

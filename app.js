@@ -2,6 +2,20 @@ const TICK_MS = 15 * 60 * 1000;
 const MAX_COMMAND_POINTS = 24;
 const LOCAL_WORLD_KEY = "mist-world";
 const SEASON_LENGTH_DAYS = 90;
+const KNOWN_SCREENS = new Set([
+  "landing",
+  "guide",
+  "auth",
+  "character",
+  "faction",
+  "clan",
+  "dashboard",
+  "actions",
+  "economy",
+  "city",
+  "social",
+  "progression",
+]);
 
 const CITY_STAGES = [
   { tier: 1, multiplier: 1.0, needPower: 0, needIntel: 0, costCredits: 0, costAlloys: 0 },
@@ -44,7 +58,9 @@ const i18n = {
     auth_register: "הרשמה",
     auth_or: "או",
     auth_google: "כניסה עם Google",
+    auth_logout: "התנתק",
     auth_ok: "התחברות בוצעה בהצלחה.",
+    auth_logged_out: "התנתקת בהצלחה.",
     auth_register_ok: "ההרשמה בוצעה. אם הופעל אימות מייל, יש לאשר במייל.",
     auth_fail: "התחברות נכשלה. בדוק אימייל/סיסמה.",
     auth_no_backend: "כניסה מאובטחת זמינה לאחר חיבור Supabase.",
@@ -288,7 +304,9 @@ const i18n = {
     auth_register: "Register",
     auth_or: "or",
     auth_google: "Continue with Google",
+    auth_logout: "Logout",
     auth_ok: "Login completed successfully.",
+    auth_logged_out: "Logged out successfully.",
     auth_register_ok: "Registration completed. Confirm email if verification is enabled.",
     auth_fail: "Login failed. Check email and password.",
     auth_no_backend: "Secure auth is available after Supabase is connected.",
@@ -532,7 +550,9 @@ const i18n = {
     auth_register: "Регистрация",
     auth_or: "или",
     auth_google: "Войти через Google",
+    auth_logout: "Выйти",
     auth_ok: "Вход выполнен успешно.",
+    auth_logged_out: "Вы успешно вышли.",
     auth_register_ok: "Регистрация завершена. Подтвердите email при необходимости.",
     auth_fail: "Ошибка входа. Проверьте email и пароль.",
     auth_no_backend: "Защищенный вход доступен после подключения Supabase.",
@@ -901,7 +921,8 @@ function isAuthenticated() {
 
 function routeByAuth(requestedStep) {
   const publicRoutes = new Set(["landing", "guide", "auth"]);
-  const target = requestedStep || "landing";
+  const rawTarget = requestedStep || "landing";
+  const target = KNOWN_SCREENS.has(rawTarget) ? rawTarget : "landing";
 
   if (!isAuthenticated()) {
     return publicRoutes.has(target) ? target : "auth";
@@ -917,6 +938,12 @@ function routeByAuth(requestedStep) {
 function navigate(step) {
   const next = routeByAuth(step || state.step || "landing");
   renderScreen(next);
+}
+
+function renderAuthUi() {
+  const logoutBtn = document.getElementById("logout-btn");
+  if (!logoutBtn) return;
+  logoutBtn.style.display = isAuthenticated() ? "inline-flex" : "none";
 }
 
 function regen() {
@@ -1010,6 +1037,7 @@ function hideTipsForever() {
 
 function refreshUI() {
   regen();
+  renderAuthUi();
   renderStats();
   document.getElementById("rank-value").textContent = `#${getRank()}`;
   document.getElementById("season-value").textContent = String(getSeasonDay());
@@ -2236,40 +2264,56 @@ async function doGoogleLogin() {
   }
 }
 
+async function doLogout() {
+  if (backend.mode === "supabase" && backend.client) {
+    await backend.client.auth.signOut();
+    state.authUserId = null;
+    state.authReady = true;
+  }
+  authStatus("auth_logged_out");
+  navigate("auth");
+}
+
 document.addEventListener("click", async (e) => {
   const target = e.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
 
-  if (action === "go") navigate(target.dataset.step);
-  if (action === "turn") await doAction(target.dataset.type);
-  if (action === "pick-faction") {
-    state.user.faction = target.dataset.value;
-    saveUser();
-    renderFactions();
-    await syncPresence();
-  }
-  if (action === "open-settings") openSettings(true);
-  if (action === "close-settings") openSettings(false);
-  if (action === "skip-tips") hideTipsForever();
-  if (action === "next-tip") document.getElementById("onboarding").classList.remove("open");
-  if (action === "bank") await doBank(target.dataset.type);
-  if (action === "market") await doMarket(target.dataset.type);
-  if (action === "upgrade-city") await doCityUpgrade();
-  if (action === "council-treasury") await doCouncilTreasury(target.dataset.type);
-  if (action === "promote-member") {
-    const commander = document.getElementById("promoteMember")?.value?.trim();
-    await promoteMemberToOfficer(commander);
-  }
-  if (action === "auth-register") await doRegister();
-  if (action === "auth-login") await doLogin();
-  if (action === "auth-google") await doGoogleLogin();
-  if (action === "shop") await doShop(target.dataset.item, target.dataset.mode);
-  if (action === "workers-save") await saveWorkers();
-  if (action === "war-add") {
-    const targetId = document.getElementById("warTargetSelect")?.value;
-    const assigned = document.getElementById("warAssignInput")?.value?.trim();
-    await addWarTarget(targetId, assigned);
+  try {
+    if (action === "go") navigate(target.dataset.step);
+    if (action === "turn") await doAction(target.dataset.type);
+    if (action === "pick-faction") {
+      state.user.faction = target.dataset.value;
+      saveUser();
+      renderFactions();
+      await syncPresence();
+    }
+    if (action === "open-settings") openSettings(true);
+    if (action === "close-settings") openSettings(false);
+    if (action === "skip-tips") hideTipsForever();
+    if (action === "next-tip") document.getElementById("onboarding").classList.remove("open");
+    if (action === "bank") await doBank(target.dataset.type);
+    if (action === "market") await doMarket(target.dataset.type);
+    if (action === "upgrade-city") await doCityUpgrade();
+    if (action === "council-treasury") await doCouncilTreasury(target.dataset.type);
+    if (action === "promote-member") {
+      const commander = document.getElementById("promoteMember")?.value?.trim();
+      await promoteMemberToOfficer(commander);
+    }
+    if (action === "auth-register") await doRegister();
+    if (action === "auth-login") await doLogin();
+    if (action === "auth-google") await doGoogleLogin();
+    if (action === "auth-logout") await doLogout();
+    if (action === "shop") await doShop(target.dataset.item, target.dataset.mode);
+    if (action === "workers-save") await saveWorkers();
+    if (action === "war-add") {
+      const targetId = document.getElementById("warTargetSelect")?.value;
+      const assigned = document.getElementById("warAssignInput")?.value?.trim();
+      await addWarTarget(targetId, assigned);
+    }
+  } catch (err) {
+    const msg = err?.message || "Unexpected error";
+    authStatus(msg);
   }
 });
 
