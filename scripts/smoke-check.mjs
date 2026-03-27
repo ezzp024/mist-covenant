@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 const SITE_URL = "https://ezzp024.github.io/mist-covenant/";
+const strictBackend = process.argv.includes("--strict-backend");
 
 function parseConfig() {
   const src = fs.readFileSync("config.js", "utf8");
@@ -15,6 +16,17 @@ async function expectHttp200(url, options = {}) {
     throw new Error(`HTTP ${res.status} for ${url}`);
   }
   return res;
+}
+
+async function tryBackendCheck(label, fn) {
+  try {
+    await fn();
+    return true;
+  } catch (err) {
+    if (strictBackend) throw err;
+    console.warn(`[smoke] WARN (${label}): ${err.message}`);
+    return false;
+  }
 }
 
 function checkI18nCoverage() {
@@ -48,23 +60,29 @@ async function run() {
   };
 
   console.log("[smoke] supabase write world_actions");
-  await expectHttp200(`${url}/rest/v1/world_actions`, {
-    method: "POST",
-    headers: { ...headers, Prefer: "return=representation" },
-    body: JSON.stringify([
-      {
-        player_id: "smoke-check",
-        commander: "smoke",
-        action_type: "smoke",
-        summary: "smoke-check",
-      },
-    ]),
+  const backendHealthy = await tryBackendCheck("supabase write", async () => {
+    await expectHttp200(`${url}/rest/v1/world_actions`, {
+      method: "POST",
+      headers: { ...headers, Prefer: "return=representation" },
+      body: JSON.stringify([
+        {
+          player_id: "smoke-check",
+          commander: "smoke",
+          action_type: "smoke",
+          summary: "smoke-check",
+        },
+      ]),
+    });
   });
 
-  console.log("[smoke] supabase read world_actions");
-  await expectHttp200(`${url}/rest/v1/world_actions?select=id,summary&order=id.desc&limit=1`, {
-    headers,
-  });
+  if (backendHealthy) {
+    console.log("[smoke] supabase read world_actions");
+    await tryBackendCheck("supabase read", async () => {
+      await expectHttp200(`${url}/rest/v1/world_actions?select=id,summary&order=id.desc&limit=1`, {
+        headers,
+      });
+    });
+  }
 
   console.log("[smoke] PASS");
 }

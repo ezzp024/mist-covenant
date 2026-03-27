@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mist Covenant QA Harness</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #0d1b2a;
+      color: #e6f1fb;
+    }
+    main {
+      max-width: 920px;
+      margin: 24px auto;
+      padding: 0 16px 24px;
+    }
+    .card {
+      background: #12273a;
+      border: 1px solid #345470;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    h1 { margin-top: 0; }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    a.btn {
+      text-decoration: none;
+      background: #2bd4ab;
+      color: #082017;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+    ul { margin: 8px 0 0; }
+    li { margin-bottom: 6px; }
+    code { background: #0a1722; padding: 1px 5px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>QA Harness - Auth + Routing</h1>
+
+    <section class="card">
+      <strong>Quick Launch</strong>
+      <div class="row">
+        <a class="btn" href="./index.html?reset=1&screen=landing&debug=1" target="_blank" rel="noopener">Fresh User + Debug</a>
+        <a class="btn" href="./index.html?screen=auth&debug=1" target="_blank" rel="noopener">Auth Screen</a>
+        <a class="btn" href="./index.html?screen=dashboard&debug=1" target="_blank" rel="noopener">Dashboard Route Guard</a>
+        <a class="btn" href="./index.html?screen=character&debug=1" target="_blank" rel="noopener">Character Route</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <strong>Checklist: Navigation/Auth</strong>
+      <ul>
+        <li>Open <code>Fresh User + Debug</code> and verify route starts at <code>landing</code>.</li>
+        <li>Try direct dashboard link while logged out; verify guard redirects to <code>auth</code>.</li>
+        <li>Login/register, refresh page, verify session restores and route becomes <code>character</code> if no commander.</li>
+        <li>Complete character and faction, refresh, verify route resolves to <code>dashboard</code>.</li>
+        <li>Google login round-trip returns to app and shows authenticated state in debug panel.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <strong>Checklist: Basic Supabase Read/Write</strong>
+      <ul>
+        <li>From dashboard, perform one turn action and verify live feed updates.</li>
+        <li>Refresh and ensure your commander data persists.</li>
+      </ul>
+      <p>Automated checks also available locally via <code>node scripts/smoke-check.mjs</code> and <code>node scripts/smoke-auth-state.mjs</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -965,6 +965,12 @@ function navigate(step) {
   renderScreen(next);
 }
 
+function resetLocalProfileState() {
+  localStorage.removeItem("mist-user");
+  localStorage.removeItem(LOCAL_WORLD_KEY);
+  state.user = defaultUser();
+}
+
 function renderAuthUi() {
   const logoutBtn = document.getElementById("logout-btn");
   if (!logoutBtn) return;
@@ -2239,6 +2245,14 @@ function clearOAuthCallbackArtifacts() {
   window.history.replaceState({}, "", cleanUrl);
 }
 
+function parseLaunchParams() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedScreen = params.get("screen") || "landing";
+  const debug = params.get("debug") === "1";
+  const reset = params.get("reset") === "1";
+  return { requestedScreen, debug, reset };
+}
+
 async function applyAuthSession(session, options = {}) {
   if (backend.mode !== "supabase") return;
   const user = session?.user || null;
@@ -2489,13 +2503,18 @@ document.getElementById("backend-form").addEventListener("submit", async (e) => 
 
 async function boot() {
   clearOAuthCallbackArtifacts();
+  const launch = parseLaunchParams();
+  if (launch.reset) {
+    resetLocalProfileState();
+  }
+  state.debugOpen = launch.debug;
   document.getElementById("lang").value = state.language;
   translatePage();
   renderFactions();
   await initBackend();
   await loadCouncilInfo();
   await runSeasonResetIfNeeded();
-  navigate("landing");
+  navigate(launch.requestedScreen || "landing");
   maybeShowTip(true);
 }
 

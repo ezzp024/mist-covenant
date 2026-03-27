@@ -24,7 +24,7 @@ mustInclude("function clearOAuthCallbackArtifacts()", "oauth callback cleanup");
 mustInclude("backend.client.auth.onAuthStateChange", "auth state listener");
 mustInclude("if (!assertGameplayReady()) return;", "dangerous action guard");
 mustInclude("if (action === \"auth-logout\") await doLogout();", "logout wiring");
-mustInclude("navigate(\"landing\")", "boot route handoff");
+mustInclude("navigate(launch.requestedScreen || \"landing\")", "boot route handoff");
 
 mustMatch(/if \(!isAuthenticated\(\)\) \{[\s\S]*return publicRoutes\.has\(target\) \? target : "auth";/, "unauthenticated route gating");
 mustMatch(/if \(!hasCharacterProfile\(\)\) \{[\s\S]*return "character";/, "character completion route gating");

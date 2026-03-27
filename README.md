@@ -15,6 +15,7 @@ Original browser-based multiplayer turn-strategy prototype with Hebrew-first UX 
 - `config.example.js` - template for configuration
 - `supabase-schema.sql` - SQL to create shared multiplayer tables
 - `BACKEND_CONTRACT.md` - frozen backend schema contract and change policy
+- `qa-auth-routing.html` - manual QA harness for auth and navigation checks
 - `.nojekyll` - disables Jekyll processing for static assets
 - `404.html` - fallback redirect for Pages
 - `CNAME.example` - template for optional custom domain
