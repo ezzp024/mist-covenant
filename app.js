@@ -114,6 +114,17 @@ const i18n = {
     join: "הצטרף",
     to_dashboard: "ללוח הבקרה",
     dashboard_title: "לוח בקרה ראשי",
+    tutorial_title: "הדרכת מפקד - צעד אחר צעד",
+    tutorial_sub: "סיים את כל השלבים כדי לפתוח קצב התקדמות מלא.",
+    tutorial_pending: "ממתין",
+    tutorial_done: "הושלם",
+    tutorial_step_auth: "התחבר לחשבון",
+    tutorial_step_character: "צור מפקד",
+    tutorial_step_faction: "בחר סיעה",
+    tutorial_step_council: "הצטרף או הקם מועצה",
+    tutorial_step_scout: "בצע סיור מודיעיני",
+    tutorial_step_bank: "בצע הפקדה בבנק",
+    tutorial_step_market: "בצע פעולה בשוק",
     dash_actions: "פעולות תור",
     dash_actions_text: "בצע פעולות לפי נקודות הפיקוד הזמינות והמשאבים שלך.",
     dash_social: "מערכת חברתית",
@@ -389,6 +400,17 @@ const i18n = {
     join: "Join",
     to_dashboard: "Go To Dashboard",
     dashboard_title: "Main Dashboard",
+    tutorial_title: "Commander Tutorial - Step by Step",
+    tutorial_sub: "Complete all steps to unlock full campaign rhythm.",
+    tutorial_pending: "Pending",
+    tutorial_done: "Done",
+    tutorial_step_auth: "Sign in",
+    tutorial_step_character: "Create commander",
+    tutorial_step_faction: "Choose faction",
+    tutorial_step_council: "Join or create council",
+    tutorial_step_scout: "Run intel scout",
+    tutorial_step_bank: "Make a bank deposit",
+    tutorial_step_market: "Run one market action",
     dash_actions: "Turn Actions",
     dash_actions_text: "Run actions based on available command points and resources.",
     dash_social: "Social Layer",
@@ -664,6 +686,17 @@ const i18n = {
     join: "Вступить",
     to_dashboard: "К панели",
     dashboard_title: "Главная панель",
+    tutorial_title: "Обучение командира - шаг за шагом",
+    tutorial_sub: "Завершите шаги, чтобы открыть полный темп прогресса.",
+    tutorial_pending: "Ожидает",
+    tutorial_done: "Готово",
+    tutorial_step_auth: "Войти в аккаунт",
+    tutorial_step_character: "Создать командира",
+    tutorial_step_faction: "Выбрать фракцию",
+    tutorial_step_council: "Вступить или создать совет",
+    tutorial_step_scout: "Провести разведку",
+    tutorial_step_bank: "Сделать депозит в банке",
+    tutorial_step_market: "Сделать действие на рынке",
     dash_actions: "Действия хода",
     dash_actions_text: "Выполняйте действия по доступным очкам и ресурсам.",
     dash_social: "Социальный слой",
@@ -892,6 +925,8 @@ const state = {
   authUserId: null,
   debugOpen: false,
   actionLock: false,
+  backendPing: "unknown",
+  backendErrors: 0,
   backendStatus: "",
   leaderboard: [],
   feed: [],
@@ -935,6 +970,11 @@ function defaultUser() {
     workers: { gold: 34, supply: 33, alloy: 33 },
     reports: {},
     attackHistory: {},
+    tutorial: {
+      didScout: false,
+      didBankDeposit: false,
+      didMarket: false,
+    },
     seasonStart: Date.now(),
   };
 }
@@ -954,6 +994,7 @@ function loadUser() {
     merged.workers = { ...defaultUser().workers, ...(parsed.workers || {}) };
     merged.reports = parsed.reports || {};
     merged.attackHistory = parsed.attackHistory || {};
+    merged.tutorial = { ...defaultUser().tutorial, ...(parsed.tutorial || {}) };
     return merged;
   } catch {
     return defaultUser();
@@ -1051,7 +1092,7 @@ function renderDebugPanel() {
   panel.setAttribute("aria-hidden", String(!state.debugOpen));
   document.getElementById("debug-route").textContent = state.step;
   document.getElementById("debug-auth").textContent = isAuthenticated() ? "yes" : "no";
-  document.getElementById("debug-backend").textContent = backend.mode;
+  document.getElementById("debug-backend").textContent = `${backend.mode} (${state.backendPing}) e:${state.backendErrors}`;
   document.getElementById("debug-commander").textContent = state.user.commander || "-";
 }
 
@@ -1082,6 +1123,38 @@ function isLockedAction(action) {
     "war-add",
     "pick-faction",
   ]).has(action);
+}
+
+async function withRetry(task, attempts = 2, delayMs = 500) {
+  let lastErr;
+  for (let i = 0; i <= attempts; i += 1) {
+    try {
+      return await task();
+    } catch (err) {
+      lastErr = err;
+      if (i < attempts) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs * (i + 1)));
+      }
+    }
+  }
+  throw lastErr;
+}
+
+async function refreshBackendPing() {
+  if (backend.mode !== "supabase" || !backend.client) {
+    state.backendPing = "local";
+    return;
+  }
+  try {
+    await withRetry(async () => {
+      const { error } = await backend.client.from("world_actions").select("id", { head: true, count: "exact" });
+      if (error) throw new Error(error.message);
+    }, 2, 450);
+    state.backendPing = "ok";
+  } catch {
+    state.backendPing = "degraded";
+    state.backendErrors += 1;
+  }
 }
 
 function assertGameplayReady() {
@@ -1214,6 +1287,7 @@ function refreshUI() {
   renderGearStats();
   renderWorkersPanel();
   renderClanRankings();
+  renderTutorialPanel();
   renderCityRequirements();
   renderWarRoom();
 }
@@ -1651,6 +1725,7 @@ async function doAction(type) {
       if (targetPlayer) {
         setReportForTarget(targetPlayer);
       }
+      state.user.tutorial.didScout = true;
       return targetPlayer ? `${t("log_scout")} [${targetPlayer.commander}]` : t("log_scout");
     },
     strike: async () => {
@@ -1715,6 +1790,7 @@ async function initBackend() {
     state.backendStatus = t("connected_local");
     seedLocalWorld();
     await refreshWorldPanels();
+    await refreshBackendPing();
     renderBackendStatus();
     return;
   }
@@ -1735,6 +1811,7 @@ async function initBackend() {
     wireRealtime();
     await pullAuthSession();
     await refreshWorldPanels();
+    await refreshBackendPing();
   } catch {
     backend.mode = "local";
     state.authReady = true;
@@ -1742,6 +1819,7 @@ async function initBackend() {
     state.backendStatus = t("connected_error");
     seedLocalWorld();
     await refreshWorldPanels();
+    await refreshBackendPing();
   }
   renderBackendStatus();
 }
@@ -1995,6 +2073,7 @@ async function doBank(type) {
     }
     state.user.credits -= 200;
     state.user.bankGold += 200;
+    state.user.tutorial.didBankDeposit = true;
     log.textContent = t("bank_deposit_done");
   }
   if (type === "withdraw") {
@@ -2020,6 +2099,7 @@ async function doMarket(type) {
     }
     state.user.credits -= 120;
     state.user.supplies += 180;
+    state.user.tutorial.didMarket = true;
     log.textContent = t("market_buy_done");
   }
   if (type === "sell-alloys") {
@@ -2029,6 +2109,7 @@ async function doMarket(type) {
     }
     state.user.alloys -= 50;
     state.user.credits += 140;
+    state.user.tutorial.didMarket = true;
     log.textContent = t("market_sell_done");
   }
   saveUser();
@@ -2347,6 +2428,31 @@ function clearOAuthCallbackArtifacts() {
   window.history.replaceState({}, "", cleanUrl);
 }
 
+function tutorialSteps() {
+  return [
+    { key: "tutorial_step_auth", done: isAuthenticated() },
+    { key: "tutorial_step_character", done: hasCharacterProfile() },
+    { key: "tutorial_step_faction", done: Boolean(state.user.faction) },
+    { key: "tutorial_step_council", done: Boolean(state.user.code) },
+    { key: "tutorial_step_scout", done: Boolean(state.user.tutorial?.didScout) },
+    { key: "tutorial_step_bank", done: Boolean(state.user.tutorial?.didBankDeposit) },
+    { key: "tutorial_step_market", done: Boolean(state.user.tutorial?.didMarket) },
+  ];
+}
+
+function renderTutorialPanel() {
+  const wrap = document.getElementById("tutorial-list");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  tutorialSteps().forEach((step) => {
+    const item = document.createElement("div");
+    item.className = `row-item tutorial-step${step.done ? " done" : ""}`;
+    const badge = step.done ? t("tutorial_done") : t("tutorial_pending");
+    item.innerHTML = `<span>${t(step.key)}</span><span class="badge minor">${badge}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function parseLaunchParams() {
   const params = new URLSearchParams(window.location.search);
   const requestedScreen = params.get("screen") || "landing";
@@ -2634,5 +2740,6 @@ setInterval(async () => {
   await runSeasonResetIfNeeded();
   await syncPresence();
   await refreshWorldPanels();
+  await refreshBackendPing();
   refreshUI();
 }, 30000);

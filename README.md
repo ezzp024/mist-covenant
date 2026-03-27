@@ -98,4 +98,6 @@ Site URL:
 - Council ranking panel, clan-assist combat bonus, and shared war room target board.
 - City-to-city progression gates with unlock requirements and production multipliers.
 - Mana resource with ritual action in the turn loop.
+- Step-by-step commander tutorial checklist on dashboard.
+- Debug panel with route/auth/backend health indicators.
 - Onboarding tooltip hints across main screens.

@@ -19,8 +19,21 @@ async function expectHttp200(url, options = {}) {
 }
 
 async function tryBackendCheck(label, fn) {
+  const attempt = async () => {
+    let lastErr;
+    for (let i = 0; i < 3; i += 1) {
+      try {
+        return await fn();
+      } catch (err) {
+        lastErr = err;
+        await new Promise((resolve) => setTimeout(resolve, 450 * (i + 1)));
+      }
+    }
+    throw lastErr;
+  };
+
   try {
-    await fn();
+    await attempt();
     return true;
   } catch (err) {
     if (strictBackend) throw err;
