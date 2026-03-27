@@ -779,6 +779,8 @@ const state = {
   step: "landing",
   language: localStorage.getItem("mist-lang") || "he",
   user: loadUser(),
+  authReady: false,
+  authUserId: null,
   backendStatus: "",
   leaderboard: [],
   feed: [],
@@ -876,12 +878,45 @@ function translatePage() {
 }
 
 function show(step) {
+  navigate(step);
+}
+
+function renderScreen(step) {
   state.step = step;
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.toggle("active", screen.id === step);
   });
   refreshUI();
   maybeShowTip();
+}
+
+function hasCharacterProfile() {
+  return Boolean(state.user.commander && state.user.commander.trim());
+}
+
+function isAuthenticated() {
+  if (backend.mode !== "supabase") return true;
+  return Boolean(state.authUserId);
+}
+
+function routeByAuth(requestedStep) {
+  const publicRoutes = new Set(["landing", "guide", "auth"]);
+  const target = requestedStep || "landing";
+
+  if (!isAuthenticated()) {
+    return publicRoutes.has(target) ? target : "auth";
+  }
+
+  if (!hasCharacterProfile()) {
+    return "character";
+  }
+
+  return target === "auth" ? "dashboard" : target;
+}
+
+function navigate(step) {
+  const next = routeByAuth(step || state.step || "landing");
+  renderScreen(next);
 }
 
 function regen() {
@@ -1479,6 +1514,8 @@ async function initBackend() {
 
   if (!config.url || !config.key || !window.supabase?.createClient) {
     backend.mode = "local";
+    state.authReady = true;
+    state.authUserId = state.user.id;
     state.backendStatus = t("connected_local");
     seedLocalWorld();
     await refreshWorldPanels();
@@ -1496,27 +1533,16 @@ async function initBackend() {
 
     backend.mode = "supabase";
     state.backendStatus = t("connected_remote");
-    backend.client.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user;
-      if (!user) return;
-      state.user.id = user.id;
-      state.user.email = user.email || state.user.email;
-      saveUser();
-      syncPresence();
-      authStatus("auth_ok");
-      if (!state.user.commander) {
-        show("character");
-      } else {
-        show("dashboard");
-      }
-      refreshUI();
+    backend.client.auth.onAuthStateChange(async (_event, session) => {
+      await applyAuthSession(session, { silentIfMissing: true, statusOnSuccess: "auth_ok" });
     });
     wireRealtime();
     await pullAuthSession();
-    await syncPresence();
     await refreshWorldPanels();
   } catch {
     backend.mode = "local";
+    state.authReady = true;
+    state.authUserId = state.user.id;
     state.backendStatus = t("connected_error");
     seedLocalWorld();
     await refreshWorldPanels();
@@ -1536,6 +1562,7 @@ function wireRealtime() {
 
 async function syncPresence() {
   if (backend.mode === "supabase") {
+    if (!isAuthenticated()) return;
     const payload = {
       player_id: state.user.id,
       commander: state.user.commander || state.user.email || "Commander",
@@ -2114,21 +2141,43 @@ function authStatus(messageKeyOrText) {
   node.textContent = i18n[state.language][messageKeyOrText] ? t(messageKeyOrText) : messageKeyOrText;
 }
 
-async function pullAuthSession() {
-  if (backend.mode !== "supabase" || !backend.client) return;
-  const { data } = await backend.client.auth.getSession();
-  const user = data?.session?.user;
-  if (!user) return;
+function clearOAuthCallbackArtifacts() {
+  const hasHashTokens = window.location.hash.includes("access_token") || window.location.hash.includes("error=");
+  const params = new URLSearchParams(window.location.search);
+  const hasCode = params.has("code") || params.has("error_description") || params.has("error");
+  if (!hasHashTokens && !hasCode) return;
+  const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+  window.history.replaceState({}, "", cleanUrl);
+}
+
+async function applyAuthSession(session, options = {}) {
+  if (backend.mode !== "supabase") return;
+  const user = session?.user || null;
+  state.authReady = true;
+
+  if (!user) {
+    state.authUserId = null;
+    if (!options.silentIfMissing) {
+      navigate("auth");
+    } else {
+      navigate(state.step);
+    }
+    return;
+  }
+
+  state.authUserId = user.id;
   state.user.id = user.id;
   state.user.email = user.email || state.user.email;
   saveUser();
   await syncPresence();
-  authStatus("auth_ok");
-  if (!state.user.commander) {
-    show("character");
-  } else {
-    show("dashboard");
-  }
+  if (options.statusOnSuccess) authStatus(options.statusOnSuccess);
+  navigate(state.step);
+}
+
+async function pullAuthSession() {
+  if (backend.mode !== "supabase" || !backend.client) return;
+  const { data } = await backend.client.auth.getSession();
+  await applyAuthSession(data?.session || null, { silentIfMissing: true, statusOnSuccess: data?.session ? "auth_ok" : null });
 }
 
 async function doRegister() {
@@ -2146,7 +2195,11 @@ async function doRegister() {
   state.user.email = email;
   saveUser();
   authStatus("auth_register_ok");
-  show("character");
+  if (backend.client) {
+    const { data } = await backend.client.auth.getSession();
+    await applyAuthSession(data?.session || null, { silentIfMissing: true });
+  }
+  navigate("auth");
 }
 
 async function doLogin() {
@@ -2162,13 +2215,10 @@ async function doLogin() {
     return;
   }
   if (data?.user) {
-    state.user.id = data.user.id;
-    state.user.email = data.user.email || email;
-    saveUser();
-    await syncPresence();
+    await applyAuthSession(data.session || { user: data.user }, { statusOnSuccess: "auth_ok" });
+  } else {
+    navigate("auth");
   }
-  authStatus("auth_ok");
-  show("character");
 }
 
 async function doGoogleLogin() {
@@ -2191,7 +2241,7 @@ document.addEventListener("click", async (e) => {
   if (!target) return;
   const action = target.dataset.action;
 
-  if (action === "go") show(target.dataset.step);
+  if (action === "go") navigate(target.dataset.step);
   if (action === "turn") await doAction(target.dataset.type);
   if (action === "pick-faction") {
     state.user.faction = target.dataset.value;
@@ -2238,7 +2288,7 @@ document.getElementById("character-form").addEventListener("submit", async (e) =
   state.user.trait = document.getElementById("trait").value;
   saveUser();
   await syncPresence();
-  show("faction");
+  navigate("faction");
 });
 
 document.getElementById("create-clan-form").addEventListener("submit", async (e) => {
@@ -2297,13 +2347,14 @@ document.getElementById("backend-form").addEventListener("submit", async (e) => 
 });
 
 async function boot() {
+  clearOAuthCallbackArtifacts();
   document.getElementById("lang").value = state.language;
   translatePage();
   renderFactions();
   await initBackend();
   await loadCouncilInfo();
   await runSeasonResetIfNeeded();
-  refreshUI();
+  navigate("landing");
   maybeShowTip(true);
 }
 
