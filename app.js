@@ -85,6 +85,7 @@ const i18n = {
     live_feed_sub: "אירועי תורות אחרונים של שחקנים.",
     actions_title: "פעולות תור",
     target_player: "שחקן יעד (אופציונלי)",
+    target_hint: "סיור קודם משפר דיוק תקיפה. תקיפה חוזרת על אותו יעד נחלשת אחרי 5 פעמים.",
     target_placeholder: "לדוגמה: Mira",
     action_scout: "סיור מודיעיני",
     action_strike: "פשיטה טקטית",
@@ -117,6 +118,12 @@ const i18n = {
     log_scout: "הסיור הצליח: נוספו מודיעין והשפעה.",
     log_strike: "הפשיטה הסתיימה: רווחת אשראי, אך צרכת אספקה.",
     log_train: "האימון הסתיים: יעילות הכוחות עלתה.",
+    intel_reports_title: "דוחות מודיעין אחרונים",
+    report_fresh: "דוח עדכני",
+    report_old: "דוח ישן",
+    strike_need_recon: "תקיפה בלי סיור עדכני מסוכנת ופחות יעילה.",
+    strike_city_block: "ניתן לתקוף רק יעדים באותה שכבת עיר.",
+    strike_farmed: "היעד הותקף כבר 5 פעמים. מתקבל רק ביזה חלקית.",
     economy_title: "כלכלה, בנק ושוק",
     bank_title: "בנק עירוני",
     bank_text: "הפקד אשראי לביטחון וצבור ריבית פסיבית במחזורי זמן.",
@@ -277,6 +284,7 @@ const i18n = {
     live_feed_sub: "Latest turn events from active players.",
     actions_title: "Turn Actions",
     target_player: "Target player (optional)",
+    target_hint: "Scouting first improves strike accuracy. Repeated strikes on same target weaken after 5.",
     target_placeholder: "Example: Mira",
     action_scout: "Intel Sweep",
     action_strike: "Tactical Raid",
@@ -309,6 +317,12 @@ const i18n = {
     log_scout: "Sweep complete: intel and influence increased.",
     log_strike: "Raid complete: credits gained, supplies consumed.",
     log_train: "Training complete: combat efficiency increased.",
+    intel_reports_title: "Recent Intel Reports",
+    report_fresh: "Fresh report",
+    report_old: "Outdated report",
+    strike_need_recon: "Attacking without fresh recon is risky and less effective.",
+    strike_city_block: "You can only attack targets in the same city tier.",
+    strike_farmed: "Target already hit 5 times. Only partial loot applies.",
     economy_title: "Economy, Bank, and Market",
     bank_title: "City Bank",
     bank_text: "Deposit credits for safety and passive interest over time.",
@@ -469,6 +483,7 @@ const i18n = {
     live_feed_sub: "Последние события ходов игроков.",
     actions_title: "Действия хода",
     target_player: "Цель (необязательно)",
+    target_hint: "Разведка перед ударом повышает точность. После 5 ударов по цели выгода падает.",
     target_placeholder: "Например: Mira",
     action_scout: "Разведка",
     action_strike: "Тактический рейд",
@@ -501,6 +516,12 @@ const i18n = {
     log_scout: "Разведка завершена: разведданные и влияние выросли.",
     log_strike: "Рейд завершен: кредиты получены, припасы потрачены.",
     log_train: "Тренировка завершена: эффективность выросла.",
+    intel_reports_title: "Последние разведотчеты",
+    report_fresh: "Свежий отчет",
+    report_old: "Устаревший отчет",
+    strike_need_recon: "Атака без свежей разведки рискованна и менее эффективна.",
+    strike_city_block: "Можно атаковать только цели того же уровня города.",
+    strike_farmed: "Цель уже атакована 5 раз. Доступна только частичная добыча.",
     economy_title: "Экономика, банк и рынок",
     bank_title: "Городской банк",
     bank_text: "Депозит защищает средства и дает пассивный прирост.",
@@ -646,6 +667,8 @@ function defaultUser() {
     bankGold: 0,
     cityTier: 1,
     seasonNumber: 1,
+    reports: {},
+    attackHistory: {},
     seasonStart: Date.now(),
   };
 }
@@ -790,6 +813,7 @@ function refreshUI() {
   renderTargetOptions();
   renderSocialPanel();
   renderSeasonArchive();
+  renderIntelReports();
 }
 
 function renderStats() {
@@ -885,6 +909,22 @@ function renderTargetOptions() {
   if ([...select.options].some((x) => x.value === current)) {
     select.value = current;
   }
+  updateTargetHint();
+}
+
+function updateTargetHint() {
+  const hint = document.getElementById("target-hint");
+  const select = document.getElementById("actionTargetSelect");
+  if (!hint || !select) return;
+  const target = findTargetPlayer(select.value);
+  if (!target) {
+    hint.textContent = t("target_hint");
+    return;
+  }
+  const report = getReportForTarget(target.player_id);
+  const status = report && Date.now() - report.timestamp < 60 * 60 * 1000 ? t("report_fresh") : t("report_old");
+  const city = target.city_tier || 1;
+  hint.textContent = `${status} · City ${city} · ${t("target_hint")}`;
 }
 
 function renderSocialPanel() {
@@ -916,6 +956,31 @@ function renderSeasonArchive() {
   });
 }
 
+function renderIntelReports() {
+  const wrap = document.getElementById("intel-reports");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const entries = Object.entries(state.user.reports || {})
+    .map(([playerId, report]) => ({ playerId, ...report }))
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 6);
+
+  if (!entries.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("no_data")}</span></div>`;
+    return;
+  }
+
+  entries.forEach((report) => {
+    const ageMs = Date.now() - report.timestamp;
+    const fresh = ageMs < 60 * 60 * 1000;
+    const title = `${report.commander || "-"} · P:${report.power} I:${report.intel}`;
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>${escapeHtml(title)}</span><span class="minor">${fresh ? t("report_fresh") : t("report_old")}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -934,6 +999,31 @@ function findTargetPlayer(targetId) {
   return state.leaderboard.find((row) => row.player_id === targetId) || null;
 }
 
+function getReportForTarget(targetId) {
+  return (state.user.reports || {})[targetId] || null;
+}
+
+function setReportForTarget(target) {
+  state.user.reports = state.user.reports || {};
+  state.user.reports[target.player_id] = {
+    commander: target.commander,
+    power: target.power || 0,
+    intel: target.intel || 0,
+    influence: target.influence || 0,
+    cityTier: target.city_tier || 1,
+    timestamp: Date.now(),
+  };
+}
+
+function attackCountForTarget(targetId) {
+  return (state.user.attackHistory || {})[targetId] || 0;
+}
+
+function increaseAttackCount(targetId) {
+  state.user.attackHistory = state.user.attackHistory || {};
+  state.user.attackHistory[targetId] = attackCountForTarget(targetId) + 1;
+}
+
 async function applyTargetDamage(target, deltaPower) {
   if (!target || !deltaPower) return;
   if (backend.mode === "supabase") {
@@ -949,26 +1039,40 @@ async function applyTargetDamage(target, deltaPower) {
 
 async function resolvePvpStrike(target) {
   if (!target) return t("no_target");
-  const attackScore = state.user.power + state.user.intel * 0.45 + Math.random() * 40 + getCityBonus();
+  if ((target.city_tier || 1) !== state.user.cityTier) return t("strike_city_block");
+
+  const report = getReportForTarget(target.player_id);
+  const hasFreshRecon = report && Date.now() - report.timestamp < 60 * 60 * 1000;
+  const reconBonus = hasFreshRecon ? 24 : -18;
+  const attackScore = state.user.power + state.user.intel * 0.45 + Math.random() * 40 + getCityBonus() + reconBonus;
   const defenseScore = (target.power || 0) + (target.intel || 0) * 0.3 + (target.influence || 0) * 0.2 + Math.random() * 35;
   const diff = attackScore - defenseScore;
+  const repeated = attackCountForTarget(target.player_id) >= 5;
 
   if (diff > 30) {
-    const loot = 160 + Math.floor(Math.random() * 90);
+    const lootBase = 160 + Math.floor(Math.random() * 90);
+    const loot = repeated ? Math.floor(lootBase * 0.35) : lootBase;
     state.user.credits += loot;
     state.user.power += 10;
     await applyTargetDamage(target, -12);
-    return `${t("pvp_win")} ${target.commander} (+${loot})`;
+    increaseAttackCount(target.player_id);
+    const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
+    const farm = repeated ? ` ${t("strike_farmed")}` : "";
+    return `${t("pvp_win")} ${target.commander} (+${loot}).${warning}${farm}`;
   }
   if (diff < -30) {
     state.user.power = Math.max(0, state.user.power - 10);
     state.user.supplies = Math.max(0, state.user.supplies - 60);
     await applyTargetDamage(target, 4);
-    return `${t("pvp_loss")} ${target.commander}`;
+    increaseAttackCount(target.player_id);
+    const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
+    return `${t("pvp_loss")} ${target.commander}.${warning}`;
   }
   state.user.power += 1;
   await applyTargetDamage(target, -2);
-  return `${t("pvp_draw")} ${target.commander}`;
+  increaseAttackCount(target.player_id);
+  const warning = hasFreshRecon ? "" : ` ${t("strike_need_recon")}`;
+  return `${t("pvp_draw")} ${target.commander}.${warning}`;
 }
 
 async function doAction(type) {
@@ -983,6 +1087,9 @@ async function doAction(type) {
       state.user.influence += 7;
       state.user.power += 2;
       state.user.intel += gain - 14;
+      if (targetPlayer) {
+        setReportForTarget(targetPlayer);
+      }
       return targetPlayer ? `${t("log_scout")} [${targetPlayer.commander}]` : t("log_scout");
     },
     strike: async () => {
@@ -1132,7 +1239,7 @@ async function publishWorldEvent(type, summary) {
 async function refreshWorldPanels() {
   if (backend.mode === "supabase") {
     const [lb, fd] = await Promise.all([
-      backend.client.from("world_players").select("player_id,commander,power,intel,influence,council").order("power", { ascending: false }).limit(10),
+      backend.client.from("world_players").select("player_id,commander,power,intel,influence,council,city_tier").order("power", { ascending: false }).limit(10),
       backend.client.from("world_actions").select("commander,summary,created_at").order("created_at", { ascending: false }).limit(12),
     ]);
     state.leaderboard = lb.data || [];
@@ -1170,6 +1277,7 @@ function seedLocalWorld() {
     power: 90 + idx * 22,
     intel: 40 + idx * 5,
     influence: 20 + idx * 4,
+    city_tier: 1 + (idx % 3),
   }));
   world.actions = [
     { commander: "Astra", summary: "Performed scouting route.", created_at: new Date().toISOString() },
@@ -1188,6 +1296,7 @@ function updateLocalWorldPlayer() {
     existing.intel = state.user.intel;
     existing.influence = state.user.influence;
     existing.council_code = state.user.code || null;
+    existing.city_tier = state.user.cityTier;
   } else {
     world.players.push({
       player_id: state.user.id,
@@ -1196,6 +1305,7 @@ function updateLocalWorldPlayer() {
       intel: state.user.intel,
       influence: state.user.influence,
       council_code: state.user.code || null,
+      city_tier: state.user.cityTier,
     });
   }
   saveLocalWorld(world);
@@ -1523,6 +1633,8 @@ async function runSeasonResetIfNeeded() {
   state.user.power = 110;
   state.user.cityTier = 1;
   state.user.bankGold = 0;
+  state.user.reports = {};
+  state.user.attackHistory = {};
   state.user.seasonNumber += 1;
   state.user.seasonStart = Date.now();
   saveUser();
@@ -1640,6 +1752,10 @@ document.addEventListener("click", async (e) => {
 
 document.getElementById("lang").addEventListener("change", (e) => {
   setLanguage(e.target.value);
+});
+
+document.getElementById("actionTargetSelect")?.addEventListener("change", () => {
+  updateTargetHint();
 });
 
 document.getElementById("character-form").addEventListener("submit", async (e) => {

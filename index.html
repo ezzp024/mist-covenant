@@ -210,6 +210,7 @@
           <span data-i18n="target_player"></span>
           <select id="actionTargetSelect"></select>
         </label>
+        <p class="screen-sub" id="target-hint" data-i18n="target_hint"></p>
       </div>
       <div class="cards three">
         <button class="action-card" data-action="turn" data-type="scout">
@@ -225,6 +226,10 @@
           <span data-i18n="cost_3"></span>
         </button>
       </div>
+      <article class="card">
+        <h3 data-i18n="intel_reports_title"></h3>
+        <div id="intel-reports" class="table-list"></div>
+      </article>
       <p class="status" id="action-log"></p>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
