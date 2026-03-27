@@ -60,10 +60,12 @@ alter table public.world_season_archive enable row level security;
 
 drop policy if exists "world players read" on public.world_players;
 drop policy if exists "world players write" on public.world_players;
+drop policy if exists "world players update" on public.world_players;
 drop policy if exists "world actions read" on public.world_actions;
 drop policy if exists "world actions write" on public.world_actions;
 drop policy if exists "world councils read" on public.world_councils;
 drop policy if exists "world councils write" on public.world_councils;
+drop policy if exists "world councils update" on public.world_councils;
 drop policy if exists "world council members read" on public.world_council_members;
 drop policy if exists "world council members write" on public.world_council_members;
 drop policy if exists "world council members update" on public.world_council_members;

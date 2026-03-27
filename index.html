@@ -81,7 +81,13 @@
           <span data-i18n="password"></span>
           <input type="password" id="password" minlength="6" required>
         </label>
-        <button type="submit" class="btn btn-primary" data-i18n="continue"></button>
+        <div class="row">
+          <button type="button" class="btn btn-primary" data-action="auth-login" data-i18n="auth_login"></button>
+          <button type="button" class="btn btn-secondary" data-action="auth-register" data-i18n="auth_register"></button>
+        </div>
+        <p class="screen-sub" data-i18n="auth_or"></p>
+        <button type="button" class="btn btn-secondary" data-action="auth-google" data-i18n="auth_google"></button>
+        <p id="auth-status" class="status"></p>
       </form>
     </section>
 

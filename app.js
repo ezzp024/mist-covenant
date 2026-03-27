@@ -32,6 +32,14 @@ const i18n = {
     auth_sub: "למטרת אב-טיפוס, הנתונים האישיים נשמרים מקומית בדפדפן.",
     email: "אימייל",
     password: "סיסמה",
+    auth_login: "התחבר",
+    auth_register: "הרשמה",
+    auth_or: "או",
+    auth_google: "כניסה עם Google",
+    auth_ok: "התחברות בוצעה בהצלחה.",
+    auth_register_ok: "ההרשמה בוצעה. אם הופעל אימות מייל, יש לאשר במייל.",
+    auth_fail: "התחברות נכשלה. בדוק אימייל/סיסמה.",
+    auth_no_backend: "כניסה מאובטחת זמינה לאחר חיבור Supabase.",
     continue: "המשך",
     character_title: "יצירת דמות",
     char_name: "שם המפקד",
@@ -216,6 +224,14 @@ const i18n = {
     auth_sub: "For prototype use, personal data is stored in your browser.",
     email: "Email",
     password: "Password",
+    auth_login: "Login",
+    auth_register: "Register",
+    auth_or: "or",
+    auth_google: "Continue with Google",
+    auth_ok: "Login completed successfully.",
+    auth_register_ok: "Registration completed. Confirm email if verification is enabled.",
+    auth_fail: "Login failed. Check email and password.",
+    auth_no_backend: "Secure auth is available after Supabase is connected.",
     continue: "Continue",
     character_title: "Character Creation",
     char_name: "Commander Name",
@@ -400,6 +416,14 @@ const i18n = {
     auth_sub: "Для прототипа данные сохраняются локально в браузере.",
     email: "Email",
     password: "Пароль",
+    auth_login: "Войти",
+    auth_register: "Регистрация",
+    auth_or: "или",
+    auth_google: "Войти через Google",
+    auth_ok: "Вход выполнен успешно.",
+    auth_register_ok: "Регистрация завершена. Подтвердите email при необходимости.",
+    auth_fail: "Ошибка входа. Проверьте email и пароль.",
+    auth_no_backend: "Защищенный вход доступен после подключения Supabase.",
     continue: "Далее",
     character_title: "Создание персонажа",
     char_name: "Имя командира",
@@ -1019,7 +1043,7 @@ async function initBackend() {
 
   try {
     backend.client = window.supabase.createClient(config.url, config.key, {
-      auth: { persistSession: false },
+      auth: { persistSession: true },
     });
 
     const ping = await backend.client.from("world_actions").select("id", { count: "exact", head: true });
@@ -1027,7 +1051,17 @@ async function initBackend() {
 
     backend.mode = "supabase";
     state.backendStatus = t("connected_remote");
+    backend.client.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+      if (!user) return;
+      state.user.id = user.id;
+      state.user.email = user.email || state.user.email;
+      saveUser();
+      syncPresence();
+      refreshUI();
+    });
     wireRealtime();
+    await pullAuthSession();
     await syncPresence();
     await refreshWorldPanels();
   } catch {
@@ -1490,6 +1524,78 @@ async function runSeasonResetIfNeeded() {
   if (log) log.textContent = t("season_reset_done");
 }
 
+function authStatus(messageKeyOrText) {
+  const node = document.getElementById("auth-status");
+  if (!node) return;
+  node.textContent = i18n[state.language][messageKeyOrText] ? t(messageKeyOrText) : messageKeyOrText;
+}
+
+async function pullAuthSession() {
+  if (backend.mode !== "supabase" || !backend.client) return;
+  const { data } = await backend.client.auth.getSession();
+  const user = data?.session?.user;
+  if (!user) return;
+  state.user.id = user.id;
+  state.user.email = user.email || state.user.email;
+  saveUser();
+  await syncPresence();
+}
+
+async function doRegister() {
+  if (backend.mode !== "supabase") {
+    authStatus("auth_no_backend");
+    return;
+  }
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const { error } = await backend.client.auth.signUp({ email, password });
+  if (error) {
+    authStatus(error.message || t("auth_fail"));
+    return;
+  }
+  state.user.email = email;
+  saveUser();
+  authStatus("auth_register_ok");
+  show("character");
+}
+
+async function doLogin() {
+  if (backend.mode !== "supabase") {
+    authStatus("auth_no_backend");
+    return;
+  }
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const { data, error } = await backend.client.auth.signInWithPassword({ email, password });
+  if (error) {
+    authStatus(error.message || t("auth_fail"));
+    return;
+  }
+  if (data?.user) {
+    state.user.id = data.user.id;
+    state.user.email = data.user.email || email;
+    saveUser();
+    await syncPresence();
+  }
+  authStatus("auth_ok");
+  show("character");
+}
+
+async function doGoogleLogin() {
+  if (backend.mode !== "supabase") {
+    authStatus("auth_no_backend");
+    return;
+  }
+  const redirectTo = `${window.location.origin}${window.location.pathname}`;
+  const { error } = await backend.client.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo },
+  });
+  if (error) {
+    authStatus(error.message || t("auth_fail"));
+  }
+}
+
 document.addEventListener("click", async (e) => {
   const target = e.target.closest("[data-action]");
   if (!target) return;
@@ -1515,18 +1621,13 @@ document.addEventListener("click", async (e) => {
     const commander = document.getElementById("promoteMember")?.value?.trim();
     await promoteMemberToOfficer(commander);
   }
+  if (action === "auth-register") await doRegister();
+  if (action === "auth-login") await doLogin();
+  if (action === "auth-google") await doGoogleLogin();
 });
 
 document.getElementById("lang").addEventListener("change", (e) => {
   setLanguage(e.target.value);
-});
-
-document.getElementById("auth-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  state.user.email = document.getElementById("email").value.trim();
-  saveUser();
-  await syncPresence();
-  show("character");
 });
 
 document.getElementById("character-form").addEventListener("submit", async (e) => {
