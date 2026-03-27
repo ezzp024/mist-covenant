@@ -13,6 +13,13 @@ const KNOWN_SCREENS = new Set([
   "clan",
   "dashboard",
   "actions",
+  "buildings",
+  "gold-mine",
+  "lumber-camp",
+  "smithy",
+  "granary",
+  "training",
+  "reports",
   "economy",
   "city",
   "social",
@@ -34,6 +41,14 @@ const i18n = {
     nav_story: "סיפור עולם",
     nav_faq: "שאלות נפוצות",
     nav_dashboard: "לוח בקרה",
+    nav_actions: "פעולות",
+    nav_buildings: "מבנים",
+    nav_training: "אימון",
+    nav_reports: "דוחות",
+    nav_economy: "כלכלה",
+    nav_city: "עיר",
+    nav_social: "מועצה",
+    nav_progress: "התקדמות",
     language: "שפה",
     backend_settings: "שרת",
     hero_eyebrow: "אסטרטגיית דפדפן תורית מרובת שחקנים",
@@ -125,6 +140,55 @@ const i18n = {
     tutorial_step_scout: "בצע סיור מודיעיני",
     tutorial_step_bank: "בצע הפקדה בבנק",
     tutorial_step_market: "בצע פעולה בשוק",
+    buildings_title: "מסך מבנים",
+    open_building: "פתח מבנה",
+    back_buildings: "חזרה למבנים",
+    building_gold_title: "מכרה זהב",
+    building_gold_text: "מעלה הכנסות אשראי בכל עדכון.",
+    building_lumber_title: "מחנה עצים",
+    building_lumber_text: "משפר תפוקת אספקה ויציבות יומית.",
+    building_smithy_title: "נפחיה",
+    building_smithy_text: "מגדילה יעילות אימון וחיזוק יחידות.",
+    building_granary_title: "אסם",
+    building_granary_text: "מגדיל תפוקת אספקה ואחסון.",
+    upgrade_building: "שדרג מבנה",
+    building_level: "רמה",
+    building_bonus: "בונוס",
+    building_cost: "עלות שדרוג",
+    building_upgrade_done: "שדרוג המבנה בוצע בהצלחה.",
+    building_upgrade_fail: "אין מספיק משאבים לשדרוג המבנה.",
+    training_title: "תורי אימון",
+    training_queue_title: "תור אימון פעיל",
+    train_militia: "אימון רגלים",
+    train_militia_cost: "עלות: 1 תור, 120 אשראי",
+    train_scout: "אימון סיירים",
+    train_scout_cost: "עלות: 1 תור, 100 אשראי",
+    train_rider: "אימון פרשים",
+    train_rider_cost: "עלות: 2 תורות, 180 אשראי",
+    training_eta: "נותרו",
+    training_ticks: "עדכונים",
+    training_queue_empty: "תור האימון ריק.",
+    training_queue_full: "תור האימון מלא.",
+    training_not_enough: "אין מספיק אשראי או תורות לאימון.",
+    training_queue_added: "יחידה נוספה לתור האימון.",
+    training_queue_done: "אימון הושלם:",
+    reports_title: "יומן קרב",
+    reports_filter: "סינון דוחות",
+    reports_log_title: "לוג דוחות",
+    report_filter_all: "הכל",
+    report_filter_scout: "סיור",
+    report_filter_strike: "פשיטה",
+    report_filter_train: "אימון",
+    report_filter_ritual: "טקס",
+    report_filter_template: "תבניות",
+    report_filter_system: "מערכת",
+    report_tpl_raid: "תבנית: פשיטה",
+    report_tpl_defense: "תבנית: הגנה",
+    report_tpl_economy: "תבנית: כלכלה",
+    report_tpl_raid_text: "תבנית פשיטה: גל סיור, גל תקיפה, גל ניקוי.",
+    report_tpl_defense_text: "תבנית הגנה: תגבור קו קדמי ותיאום מועצה.",
+    report_tpl_economy_text: "תבנית כלכלה: הפקדה, שוק וחלוקת עובדים מחדש.",
+    report_empty: "אין דוחות להצגה.",
     dash_actions: "פעולות תור",
     dash_actions_text: "בצע פעולות לפי נקודות הפיקוד הזמינות והמשאבים שלך.",
     dash_social: "מערכת חברתית",
@@ -320,6 +384,14 @@ const i18n = {
     nav_story: "Story",
     nav_faq: "FAQ",
     nav_dashboard: "Dashboard",
+    nav_actions: "Actions",
+    nav_buildings: "Buildings",
+    nav_training: "Training",
+    nav_reports: "Reports",
+    nav_economy: "Economy",
+    nav_city: "City",
+    nav_social: "Council",
+    nav_progress: "Progress",
     language: "Language",
     backend_settings: "Server",
     hero_eyebrow: "Multiplayer turn-based browser strategy",
@@ -411,6 +483,55 @@ const i18n = {
     tutorial_step_scout: "Run intel scout",
     tutorial_step_bank: "Make a bank deposit",
     tutorial_step_market: "Run one market action",
+    buildings_title: "Buildings",
+    open_building: "Open Building",
+    back_buildings: "Back to Buildings",
+    building_gold_title: "Gold Mine",
+    building_gold_text: "Raises credit income each update.",
+    building_lumber_title: "Lumber Camp",
+    building_lumber_text: "Improves supply output and daily stability.",
+    building_smithy_title: "Smithy",
+    building_smithy_text: "Boosts training efficiency and unit strength.",
+    building_granary_title: "Granary",
+    building_granary_text: "Raises supply throughput and storage.",
+    upgrade_building: "Upgrade Building",
+    building_level: "Level",
+    building_bonus: "Bonus",
+    building_cost: "Upgrade Cost",
+    building_upgrade_done: "Building upgraded successfully.",
+    building_upgrade_fail: "Not enough resources to upgrade this building.",
+    training_title: "Training Queues",
+    training_queue_title: "Active Training Queue",
+    train_militia: "Train Militia",
+    train_militia_cost: "Cost: 1 turn, 120 credits",
+    train_scout: "Train Scouts",
+    train_scout_cost: "Cost: 1 turn, 100 credits",
+    train_rider: "Train Riders",
+    train_rider_cost: "Cost: 2 turns, 180 credits",
+    training_eta: "Remaining",
+    training_ticks: "ticks",
+    training_queue_empty: "Training queue is empty.",
+    training_queue_full: "Training queue is full.",
+    training_not_enough: "Not enough credits or turns for training.",
+    training_queue_added: "Unit added to training queue.",
+    training_queue_done: "Training complete:",
+    reports_title: "Battle Log",
+    reports_filter: "Report Filter",
+    reports_log_title: "Report Log",
+    report_filter_all: "All",
+    report_filter_scout: "Scout",
+    report_filter_strike: "Strike",
+    report_filter_train: "Training",
+    report_filter_ritual: "Ritual",
+    report_filter_template: "Templates",
+    report_filter_system: "System",
+    report_tpl_raid: "Template: Raid",
+    report_tpl_defense: "Template: Defense",
+    report_tpl_economy: "Template: Economy",
+    report_tpl_raid_text: "Raid template: recon wave, strike wave, cleanup wave.",
+    report_tpl_defense_text: "Defense template: frontline reinforcement and council sync.",
+    report_tpl_economy_text: "Economy template: bank deposit, market cycle, worker rebalance.",
+    report_empty: "No reports to display.",
     dash_actions: "Turn Actions",
     dash_actions_text: "Run actions based on available command points and resources.",
     dash_social: "Social Layer",
@@ -606,6 +727,14 @@ const i18n = {
     nav_story: "История",
     nav_faq: "FAQ",
     nav_dashboard: "Панель",
+    nav_actions: "Действия",
+    nav_buildings: "Здания",
+    nav_training: "Тренировка",
+    nav_reports: "Отчеты",
+    nav_economy: "Экономика",
+    nav_city: "Город",
+    nav_social: "Совет",
+    nav_progress: "Прогресс",
     language: "Язык",
     backend_settings: "Сервер",
     hero_eyebrow: "Пошаговая браузерная стратегия",
@@ -697,6 +826,55 @@ const i18n = {
     tutorial_step_scout: "Провести разведку",
     tutorial_step_bank: "Сделать депозит в банке",
     tutorial_step_market: "Сделать действие на рынке",
+    buildings_title: "Здания",
+    open_building: "Открыть здание",
+    back_buildings: "Назад к зданиям",
+    building_gold_title: "Золотая шахта",
+    building_gold_text: "Повышает доход кредитов в каждом обновлении.",
+    building_lumber_title: "Лесной лагерь",
+    building_lumber_text: "Увеличивает выпуск припасов и стабильность.",
+    building_smithy_title: "Кузница",
+    building_smithy_text: "Повышает эффективность тренировки и силу отрядов.",
+    building_granary_title: "Амбар",
+    building_granary_text: "Увеличивает выпуск припасов и хранение.",
+    upgrade_building: "Улучшить здание",
+    building_level: "Уровень",
+    building_bonus: "Бонус",
+    building_cost: "Стоимость улучшения",
+    building_upgrade_done: "Здание улучшено.",
+    building_upgrade_fail: "Недостаточно ресурсов для улучшения здания.",
+    training_title: "Очереди тренировки",
+    training_queue_title: "Активная очередь",
+    train_militia: "Тренировать пехоту",
+    train_militia_cost: "Цена: 1 ход, 120 кредитов",
+    train_scout: "Тренировать разведчиков",
+    train_scout_cost: "Цена: 1 ход, 100 кредитов",
+    train_rider: "Тренировать всадников",
+    train_rider_cost: "Цена: 2 хода, 180 кредитов",
+    training_eta: "Осталось",
+    training_ticks: "тиков",
+    training_queue_empty: "Очередь тренировки пуста.",
+    training_queue_full: "Очередь тренировки заполнена.",
+    training_not_enough: "Недостаточно кредитов или ходов для тренировки.",
+    training_queue_added: "Юнит добавлен в очередь тренировки.",
+    training_queue_done: "Тренировка завершена:",
+    reports_title: "Боевой журнал",
+    reports_filter: "Фильтр отчетов",
+    reports_log_title: "Лог отчетов",
+    report_filter_all: "Все",
+    report_filter_scout: "Разведка",
+    report_filter_strike: "Рейд",
+    report_filter_train: "Тренировка",
+    report_filter_ritual: "Ритуал",
+    report_filter_template: "Шаблоны",
+    report_filter_system: "Система",
+    report_tpl_raid: "Шаблон: рейд",
+    report_tpl_defense: "Шаблон: защита",
+    report_tpl_economy: "Шаблон: экономика",
+    report_tpl_raid_text: "Шаблон рейда: волна разведки, удар, зачистка.",
+    report_tpl_defense_text: "Шаблон защиты: усилить фронт и синхронизировать совет.",
+    report_tpl_economy_text: "Шаблон экономики: депозит, рынок, баланс рабочих.",
+    report_empty: "Нет отчетов для отображения.",
     dash_actions: "Действия хода",
     dash_actions_text: "Выполняйте действия по доступным очкам и ресурсам.",
     dash_social: "Социальный слой",
@@ -968,6 +1146,9 @@ function defaultUser() {
       array: { common: 0, rare: 0, elite: 0 },
     },
     workers: { gold: 34, supply: 33, alloy: 33 },
+    buildings: { goldMine: 1, lumberCamp: 1, smithy: 1, granary: 1 },
+    trainingQueue: [],
+    reportLog: [],
     reports: {},
     attackHistory: {},
     tutorial: {
@@ -992,6 +1173,9 @@ function loadUser() {
       array: { ...baseTier.array, ...(parsed.tierGear?.array || {}) },
     };
     merged.workers = { ...defaultUser().workers, ...(parsed.workers || {}) };
+    merged.buildings = { ...defaultUser().buildings, ...(parsed.buildings || {}) };
+    merged.trainingQueue = Array.isArray(parsed.trainingQueue) ? parsed.trainingQueue : [];
+    merged.reportLog = Array.isArray(parsed.reportLog) ? parsed.reportLog : [];
     merged.reports = parsed.reports || {};
     merged.attackHistory = parsed.attackHistory || {};
     merged.tutorial = { ...defaultUser().tutorial, ...(parsed.tutorial || {}) };
@@ -1039,8 +1223,15 @@ function renderScreen(step) {
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.toggle("active", screen.id === step);
   });
+  renderMenuState();
   refreshUI();
   maybeShowTip();
+}
+
+function renderMenuState() {
+  document.querySelectorAll("[data-action='go'][data-step]").forEach((node) => {
+    node.classList.toggle("active", node.dataset.step === state.step);
+  });
 }
 
 function hasCharacterProfile() {
@@ -1176,6 +1367,38 @@ function assertGameplayReady() {
   return true;
 }
 
+function addReportLog(type, summary, source = "action") {
+  state.user.reportLog = state.user.reportLog || [];
+  state.user.reportLog.unshift({
+    id: crypto.randomUUID(),
+    type,
+    source,
+    summary,
+    createdAt: Date.now(),
+  });
+  state.user.reportLog = state.user.reportLog.slice(0, 140);
+}
+
+function getBuildingLevel(name) {
+  return state.user.buildings?.[name] || 1;
+}
+
+function buildingConfig(name) {
+  const lvl = getBuildingLevel(name);
+  const costCredits = Math.floor(260 * Math.pow(1.62, lvl - 1));
+  const costAlloys = Math.floor(90 * Math.pow(1.55, lvl - 1));
+  if (name === "goldMine") {
+    return { label: t("building_gold_title"), bonus: `+${(lvl - 1) * 14}% credits`, costCredits, costAlloys };
+  }
+  if (name === "lumberCamp") {
+    return { label: t("building_lumber_title"), bonus: `+${(lvl - 1) * 12}% supplies`, costCredits, costAlloys };
+  }
+  if (name === "smithy") {
+    return { label: t("building_smithy_title"), bonus: `+${(lvl - 1) * 10}% training`, costCredits, costAlloys };
+  }
+  return { label: t("building_granary_title"), bonus: `+${(lvl - 1) * 16}% supplies`, costCredits, costAlloys };
+}
+
 function regen() {
   const now = Date.now();
   const gained = Math.floor((now - state.user.lastTick) / TICK_MS);
@@ -1183,11 +1406,15 @@ function regen() {
     state.user.commandPoints = Math.min(MAX_COMMAND_POINTS, state.user.commandPoints + gained);
     const bonus = 1 + getCityBonus() / 100;
     const workers = state.user.workers || { gold: 34, supply: 33, alloy: 33 };
-    state.user.credits += Math.floor(90 * gained * bonus * (workers.gold / 100));
-    state.user.supplies += Math.floor(90 * gained * bonus * (workers.supply / 100));
+    const goldBoost = 1 + (getBuildingLevel("goldMine") - 1) * 0.14;
+    const lumberBoost = 1 + (getBuildingLevel("lumberCamp") - 1) * 0.12;
+    const granaryBoost = 1 + (getBuildingLevel("granary") - 1) * 0.16;
+    state.user.credits += Math.floor(90 * gained * bonus * (workers.gold / 100) * goldBoost);
+    state.user.supplies += Math.floor(90 * gained * bonus * (workers.supply / 100) * lumberBoost * granaryBoost);
     state.user.alloys += Math.floor(90 * gained * bonus * (workers.alloy / 100));
     state.user.mana = Math.min(240, (state.user.mana || 0) + 4 * gained);
     state.user.bankGold += Math.floor(state.user.bankGold * 0.01 * gained);
+    processTrainingQueue();
     state.user.lastTick += gained * TICK_MS;
     saveUser();
   }
@@ -1288,6 +1515,9 @@ function refreshUI() {
   renderWorkersPanel();
   renderClanRankings();
   renderTutorialPanel();
+  renderBuildingPanels();
+  renderTrainingQueue();
+  renderReportLog();
   renderCityRequirements();
   renderWarRoom();
 }
@@ -1758,6 +1988,7 @@ async function doAction(type) {
 
   const summary = await effects[type]();
   log.textContent = summary;
+  addReportLog(type, summary, "action");
   saveUser();
   await syncPresence();
   await publishWorldEvent(type, summary);
@@ -2142,6 +2373,72 @@ async function doCityUpgrade() {
   refreshUI();
 }
 
+async function doBuildingUpgrade(building) {
+  const cfg = buildingConfig(building);
+  const log =
+    building === "goldMine"
+      ? document.getElementById("building-log")
+      : building === "lumberCamp"
+        ? document.getElementById("building-log-lumber")
+        : building === "smithy"
+          ? document.getElementById("building-log-smithy")
+          : document.getElementById("building-log-granary");
+  if (state.user.credits < cfg.costCredits || state.user.alloys < cfg.costAlloys) {
+    if (log) log.textContent = t("building_upgrade_fail");
+    return;
+  }
+  state.user.credits -= cfg.costCredits;
+  state.user.alloys -= cfg.costAlloys;
+  state.user.buildings[building] = getBuildingLevel(building) + 1;
+  if (log) log.textContent = t("building_upgrade_done");
+  addReportLog("system", `${cfg.label}: ${t("building_upgrade_done")}`, "system");
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+function trainingTypeConfig(type) {
+  if (type === "militia") return { turns: 1, credits: 120, durationTicks: 1 };
+  if (type === "scout") return { turns: 1, credits: 100, durationTicks: 1 };
+  return { turns: 2, credits: 180, durationTicks: 2 };
+}
+
+async function enqueueTraining(type) {
+  const log = document.getElementById("training-log");
+  state.user.trainingQueue = state.user.trainingQueue || [];
+  if (state.user.trainingQueue.length >= 5) {
+    log.textContent = t("training_queue_full");
+    return;
+  }
+  const cfg = trainingTypeConfig(type);
+  if (state.user.commandPoints < cfg.turns || state.user.credits < cfg.credits) {
+    log.textContent = t("training_not_enough");
+    return;
+  }
+  state.user.commandPoints -= cfg.turns;
+  state.user.credits -= cfg.credits;
+  state.user.trainingQueue.push({
+    id: crypto.randomUUID(),
+    type,
+    durationTicks: cfg.durationTicks,
+    readyAt: Date.now() + cfg.durationTicks * TICK_MS,
+  });
+  log.textContent = t("training_queue_added");
+  addReportLog("train", `${t("training_queue_added")} ${type}`, "system");
+  saveUser();
+  await syncPresence();
+  refreshUI();
+}
+
+async function addReportTemplate(template) {
+  let text = t("report_tpl_raid_text");
+  if (template === "defense") text = t("report_tpl_defense_text");
+  if (template === "economy") text = t("report_tpl_economy_text");
+  addReportLog("template", text, "template");
+  saveUser();
+  refreshUI();
+}
+
 function itemCost(item) {
   const map = {
     blade: { buy: 280, sell: 120 },
@@ -2453,6 +2750,100 @@ function renderTutorialPanel() {
   });
 }
 
+function renderBuildingPanels() {
+  const mapping = [
+    ["goldMine", "gold-mine-panel"],
+    ["lumberCamp", "lumber-camp-panel"],
+    ["smithy", "smithy-panel"],
+    ["granary", "granary-panel"],
+  ];
+  mapping.forEach(([key, id]) => {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    const lvl = getBuildingLevel(key);
+    const cfg = buildingConfig(key);
+    wrap.innerHTML = "";
+    [
+      [t("building_level"), String(lvl)],
+      [t("building_bonus"), cfg.bonus],
+      [t("building_cost"), `${cfg.costCredits} / ${cfg.costAlloys}`],
+    ].forEach(([k, v]) => {
+      const item = document.createElement("div");
+      item.className = "row-item";
+      item.innerHTML = `<span>${k}</span><span class="minor">${v}</span>`;
+      wrap.appendChild(item);
+    });
+  });
+}
+
+function processTrainingQueue() {
+  state.user.trainingQueue = state.user.trainingQueue || [];
+  if (!state.user.trainingQueue.length) return;
+  const now = Date.now();
+  const nextQueue = [];
+  state.user.trainingQueue.forEach((entry) => {
+    if (now < entry.readyAt) {
+      nextQueue.push(entry);
+      return;
+    }
+    const smithyBoost = 1 + (getBuildingLevel("smithy") - 1) * 0.1;
+    if (entry.type === "militia") {
+      state.user.power += Math.floor(6 * smithyBoost);
+      addReportLog("train", `${t("training_queue_done")} ${t("train_militia")}`, "system");
+    }
+    if (entry.type === "scout") {
+      state.user.intel += Math.floor(8 * smithyBoost);
+      addReportLog("train", `${t("training_queue_done")} ${t("train_scout")}`, "system");
+    }
+    if (entry.type === "rider") {
+      state.user.power += Math.floor(10 * smithyBoost);
+      state.user.influence += 3;
+      addReportLog("train", `${t("training_queue_done")} ${t("train_rider")}`, "system");
+    }
+  });
+  state.user.trainingQueue = nextQueue;
+}
+
+function renderTrainingQueue() {
+  const wrap = document.getElementById("training-queue");
+  if (!wrap) return;
+  processTrainingQueue();
+  wrap.innerHTML = "";
+  const queue = state.user.trainingQueue || [];
+  if (!queue.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("training_queue_empty")}</span></div>`;
+    return;
+  }
+  queue.forEach((entry) => {
+    const remainTicks = Math.max(0, Math.ceil((entry.readyAt - Date.now()) / TICK_MS));
+    const label = entry.type === "militia" ? t("train_militia") : entry.type === "scout" ? t("train_scout") : t("train_rider");
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>${label}</span><span class="minor">${t("training_eta")} ${remainTicks} ${t("training_ticks")}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
+function renderReportLog() {
+  const wrap = document.getElementById("report-log");
+  if (!wrap) return;
+  const filter = document.getElementById("report-filter")?.value || "all";
+  const rows = (state.user.reportLog || []).filter((r) => filter === "all" || r.type === filter || r.source === filter);
+  wrap.innerHTML = "";
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="row-item"><span>${t("report_empty")}</span></div>`;
+    return;
+  }
+  rows.slice(0, 40).forEach((r) => {
+    const d = new Date(r.createdAt || Date.now());
+    const stamp = `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+    const item = document.createElement("div");
+    item.className = "row-item";
+    item.innerHTML = `<span>${r.summary}</span><span class="minor">${stamp}</span>`;
+    wrap.appendChild(item);
+  });
+}
+
 function parseLaunchParams() {
   const params = new URLSearchParams(window.location.search);
   const requestedScreen = params.get("screen") || "landing";
@@ -2619,6 +3010,18 @@ document.addEventListener("click", async (e) => {
       if (!assertGameplayReady()) return;
       await doShop(target.dataset.item, target.dataset.mode);
     }
+    if (action === "upgrade-building") {
+      if (!assertGameplayReady()) return;
+      await doBuildingUpgrade(target.dataset.building);
+    }
+    if (action === "queue-train") {
+      if (!assertGameplayReady()) return;
+      await enqueueTraining(target.dataset.type);
+    }
+    if (action === "report-template") {
+      if (!assertGameplayReady()) return;
+      await addReportTemplate(target.dataset.template);
+    }
     if (action === "workers-save") {
       if (!assertGameplayReady()) return;
       await saveWorkers();
@@ -2644,6 +3047,10 @@ document.getElementById("lang").addEventListener("change", (e) => {
 
 document.getElementById("actionTargetSelect")?.addEventListener("change", () => {
   updateTargetHint();
+});
+
+document.getElementById("report-filter")?.addEventListener("change", () => {
+  renderReportLog();
 });
 
 document.getElementById("character-form").addEventListener("submit", async (e) => {

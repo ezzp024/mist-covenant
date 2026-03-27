@@ -33,6 +33,18 @@
     </div>
   </header>
 
+  <nav class="menu-bar" aria-label="Game menu">
+    <button class="menu-btn" data-action="go" data-step="dashboard" data-i18n="nav_dashboard"></button>
+    <button class="menu-btn" data-action="go" data-step="actions" data-i18n="nav_actions"></button>
+    <button class="menu-btn" data-action="go" data-step="buildings" data-i18n="nav_buildings"></button>
+    <button class="menu-btn" data-action="go" data-step="training" data-i18n="nav_training"></button>
+    <button class="menu-btn" data-action="go" data-step="reports" data-i18n="nav_reports"></button>
+    <button class="menu-btn" data-action="go" data-step="economy" data-i18n="nav_economy"></button>
+    <button class="menu-btn" data-action="go" data-step="city" data-i18n="nav_city"></button>
+    <button class="menu-btn" data-action="go" data-step="social" data-i18n="nav_social"></button>
+    <button class="menu-btn" data-action="go" data-step="progression" data-i18n="nav_progress"></button>
+  </nav>
+
   <main class="app-wrap">
     <section class="screen active" id="landing">
       <div class="hero">
@@ -346,6 +358,127 @@
       <p class="screen-sub" data-i18n="city_upgrade_text"></p>
       <button class="btn btn-secondary" data-action="upgrade-city" data-i18n="city_upgrade"></button>
       <p class="status" id="city-log"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="buildings">
+      <h2 data-i18n="buildings_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="building_gold_title"></h3>
+          <p class="screen-sub" data-i18n="building_gold_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="gold-mine" data-i18n="open_building"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="building_lumber_title"></h3>
+          <p class="screen-sub" data-i18n="building_lumber_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="lumber-camp" data-i18n="open_building"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="building_smithy_title"></h3>
+          <p class="screen-sub" data-i18n="building_smithy_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="smithy" data-i18n="open_building"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="building_granary_title"></h3>
+          <p class="screen-sub" data-i18n="building_granary_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="granary" data-i18n="open_building"></button>
+        </article>
+      </div>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="gold-mine">
+      <h2 data-i18n="building_gold_title"></h2>
+      <article class="card">
+        <div id="gold-mine-panel" class="table-list"></div>
+        <button class="btn btn-secondary" data-action="upgrade-building" data-building="goldMine" data-i18n="upgrade_building"></button>
+      </article>
+      <p class="status" id="building-log"></p>
+      <button class="btn btn-secondary" data-action="go" data-step="buildings" data-i18n="back_buildings"></button>
+    </section>
+
+    <section class="screen" id="lumber-camp">
+      <h2 data-i18n="building_lumber_title"></h2>
+      <article class="card">
+        <div id="lumber-camp-panel" class="table-list"></div>
+        <button class="btn btn-secondary" data-action="upgrade-building" data-building="lumberCamp" data-i18n="upgrade_building"></button>
+      </article>
+      <p class="status" id="building-log-lumber"></p>
+      <button class="btn btn-secondary" data-action="go" data-step="buildings" data-i18n="back_buildings"></button>
+    </section>
+
+    <section class="screen" id="smithy">
+      <h2 data-i18n="building_smithy_title"></h2>
+      <article class="card">
+        <div id="smithy-panel" class="table-list"></div>
+        <button class="btn btn-secondary" data-action="upgrade-building" data-building="smithy" data-i18n="upgrade_building"></button>
+      </article>
+      <p class="status" id="building-log-smithy"></p>
+      <button class="btn btn-secondary" data-action="go" data-step="buildings" data-i18n="back_buildings"></button>
+    </section>
+
+    <section class="screen" id="granary">
+      <h2 data-i18n="building_granary_title"></h2>
+      <article class="card">
+        <div id="granary-panel" class="table-list"></div>
+        <button class="btn btn-secondary" data-action="upgrade-building" data-building="granary" data-i18n="upgrade_building"></button>
+      </article>
+      <p class="status" id="building-log-granary"></p>
+      <button class="btn btn-secondary" data-action="go" data-step="buildings" data-i18n="back_buildings"></button>
+    </section>
+
+    <section class="screen" id="training">
+      <h2 data-i18n="training_title"></h2>
+      <div class="cards three">
+        <button class="action-card" data-action="queue-train" data-type="militia">
+          <strong data-i18n="train_militia"></strong>
+          <span data-i18n="train_militia_cost"></span>
+        </button>
+        <button class="action-card" data-action="queue-train" data-type="scout">
+          <strong data-i18n="train_scout"></strong>
+          <span data-i18n="train_scout_cost"></span>
+        </button>
+        <button class="action-card" data-action="queue-train" data-type="rider">
+          <strong data-i18n="train_rider"></strong>
+          <span data-i18n="train_rider_cost"></span>
+        </button>
+      </div>
+      <article class="card">
+        <h3 data-i18n="training_queue_title"></h3>
+        <div id="training-queue" class="table-list"></div>
+      </article>
+      <p class="status" id="training-log"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="reports">
+      <h2 data-i18n="reports_title"></h2>
+      <article class="card">
+        <div class="row">
+          <label>
+            <span data-i18n="reports_filter"></span>
+            <select id="report-filter">
+              <option value="all" data-i18n="report_filter_all"></option>
+              <option value="scout" data-i18n="report_filter_scout"></option>
+              <option value="strike" data-i18n="report_filter_strike"></option>
+              <option value="train" data-i18n="report_filter_train"></option>
+              <option value="ritual" data-i18n="report_filter_ritual"></option>
+              <option value="template" data-i18n="report_filter_template"></option>
+              <option value="system" data-i18n="report_filter_system"></option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <button class="btn btn-secondary" data-action="report-template" data-template="raid" data-i18n="report_tpl_raid"></button>
+          <button class="btn btn-secondary" data-action="report-template" data-template="defense" data-i18n="report_tpl_defense"></button>
+          <button class="btn btn-secondary" data-action="report-template" data-template="economy" data-i18n="report_tpl_economy"></button>
+        </div>
+      </article>
+      <article class="card">
+        <h3 data-i18n="reports_log_title"></h3>
+        <div id="report-log" class="table-list"></div>
+      </article>
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
 
