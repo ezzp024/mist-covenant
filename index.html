@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hebrew-first multiplayer turn-based browser strategy game prototype.">
+  <title>ברית הערפל | משחק אסטרטגיה בדפדפן</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" data-action="go" data-step="landing">ברית הערפל</a>
+    <nav class="topnav">
+      <button class="nav-btn" data-action="go" data-step="landing" data-i18n="nav_landing"></button>
+      <button class="nav-btn" data-action="go" data-step="guide" data-i18n="nav_flow"></button>
+      <button class="nav-btn" data-action="go" data-step="dashboard" data-i18n="nav_dashboard"></button>
+    </nav>
+    <div class="top-controls">
+      <button class="nav-btn" data-action="open-settings" data-i18n="backend_settings"></button>
+      <label class="lang-label" for="lang" data-i18n="language"></label>
+      <select id="lang" class="lang-select" aria-label="Language selector">
+        <option value="he">עברית</option>
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="app-wrap">
+    <section class="screen active" id="landing">
+      <div class="hero">
+        <p class="eyebrow" data-i18n="hero_eyebrow"></p>
+        <h1 data-i18n="hero_title"></h1>
+        <p class="lead" data-i18n="hero_subtitle"></p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" data-action="go" data-step="auth" data-i18n="hero_cta_primary"></button>
+          <button class="btn btn-secondary" data-action="go" data-step="guide" data-i18n="hero_cta_secondary"></button>
+        </div>
+      </div>
+
+      <div class="cards three">
+        <article class="card">
+          <h3 data-i18n="landing_card_1_title"></h3>
+          <p data-i18n="landing_card_1_text"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="landing_card_2_title"></h3>
+          <p data-i18n="landing_card_2_text"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="landing_card_3_title"></h3>
+          <p data-i18n="landing_card_3_text"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen" id="guide">
+      <h2 data-i18n="flow_title"></h2>
+      <ol class="flow-list">
+        <li data-i18n="flow_1"></li>
+        <li data-i18n="flow_2"></li>
+        <li data-i18n="flow_3"></li>
+        <li data-i18n="flow_4"></li>
+        <li data-i18n="flow_5"></li>
+      </ol>
+      <button class="btn btn-primary" data-action="go" data-step="auth" data-i18n="start_now"></button>
+    </section>
+
+    <section class="screen" id="auth">
+      <h2 data-i18n="auth_title"></h2>
+      <p class="screen-sub" data-i18n="auth_sub"></p>
+      <form id="auth-form" class="form">
+        <label>
+          <span data-i18n="email"></span>
+          <input type="email" id="email" required>
+        </label>
+        <label>
+          <span data-i18n="password"></span>
+          <input type="password" id="password" minlength="6" required>
+        </label>
+        <button type="submit" class="btn btn-primary" data-i18n="continue"></button>
+      </form>
+    </section>
+
+    <section class="screen" id="character">
+      <h2 data-i18n="character_title"></h2>
+      <form id="character-form" class="form">
+        <label>
+          <span data-i18n="char_name"></span>
+          <input id="charName" required maxlength="20">
+        </label>
+        <label>
+          <span data-i18n="char_origin"></span>
+          <select id="origin" required>
+            <option value="north" data-i18n="origin_north"></option>
+            <option value="delta" data-i18n="origin_delta"></option>
+            <option value="forge" data-i18n="origin_forge"></option>
+            <option value="dunes" data-i18n="origin_dunes"></option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="char_trait"></span>
+          <select id="trait" required>
+            <option value="strategist" data-i18n="trait_strategist"></option>
+            <option value="broker" data-i18n="trait_broker"></option>
+            <option value="stalker" data-i18n="trait_stalker"></option>
+            <option value="warden" data-i18n="trait_warden"></option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary" data-i18n="continue"></button>
+      </form>
+    </section>
+
+    <section class="screen" id="faction">
+      <h2 data-i18n="faction_title"></h2>
+      <div class="cards two" id="faction-cards"></div>
+      <button class="btn btn-primary" data-action="go" data-step="clan" data-i18n="continue_to_clan"></button>
+    </section>
+
+    <section class="screen" id="clan">
+      <h2 data-i18n="clan_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="create_council"></h3>
+          <form id="create-clan-form" class="form compact">
+            <label>
+              <span data-i18n="council_name"></span>
+              <input id="newClanName" maxlength="24">
+            </label>
+            <button type="submit" class="btn btn-secondary" data-i18n="create"></button>
+          </form>
+        </article>
+        <article class="card">
+          <h3 data-i18n="join_council"></h3>
+          <form id="join-clan-form" class="form compact">
+            <label>
+              <span data-i18n="join_code"></span>
+              <input id="joinCode" maxlength="8" placeholder="AB12CD34">
+            </label>
+            <button type="submit" class="btn btn-secondary" data-i18n="join"></button>
+          </form>
+        </article>
+      </div>
+      <p id="clan-status" class="status"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="dashboard">
+      <h2 data-i18n="dashboard_title"></h2>
+      <div class="stats" id="stats"></div>
+      <div class="cards three">
+        <article class="card">
+          <h3 data-i18n="dash_actions"></h3>
+          <p data-i18n="dash_actions_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="actions" data-i18n="open_actions"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="dash_social"></h3>
+          <p data-i18n="dash_social_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="social" data-i18n="open_social"></button>
+        </article>
+        <article class="card">
+          <h3 data-i18n="dash_progress"></h3>
+          <p data-i18n="dash_progress_text"></p>
+          <button class="btn btn-secondary" data-action="go" data-step="progression" data-i18n="open_progress"></button>
+        </article>
+      </div>
+
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="live_leaderboard"></h3>
+          <p class="screen-sub" data-i18n="live_leaderboard_sub"></p>
+          <div id="leaderboard" class="table-list"></div>
+        </article>
+        <article class="card">
+          <h3 data-i18n="live_feed"></h3>
+          <p class="screen-sub" data-i18n="live_feed_sub"></p>
+          <div id="feed" class="feed-list"></div>
+        </article>
+      </div>
+      <p id="backend-status" class="status"></p>
+    </section>
+
+    <section class="screen" id="actions">
+      <h2 data-i18n="actions_title"></h2>
+      <div class="cards three">
+        <button class="action-card" data-action="turn" data-type="scout">
+          <strong data-i18n="action_scout"></strong>
+          <span data-i18n="cost_2"></span>
+        </button>
+        <button class="action-card" data-action="turn" data-type="strike">
+          <strong data-i18n="action_strike"></strong>
+          <span data-i18n="cost_4"></span>
+        </button>
+        <button class="action-card" data-action="turn" data-type="train">
+          <strong data-i18n="action_train"></strong>
+          <span data-i18n="cost_3"></span>
+        </button>
+      </div>
+      <p class="status" id="action-log"></p>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="social">
+      <h2 data-i18n="social_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="social_ops"></h3>
+          <p data-i18n="social_ops_text"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="social_chat"></h3>
+          <p data-i18n="social_chat_text"></p>
+        </article>
+      </div>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+
+    <section class="screen" id="progression">
+      <h2 data-i18n="progress_title"></h2>
+      <div class="cards two">
+        <article class="card">
+          <h3 data-i18n="rank_label"></h3>
+          <p id="rank-value" class="big"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="season_label"></h3>
+          <p id="season-value" class="big"></p>
+        </article>
+      </div>
+      <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
+    </section>
+  </main>
+
+  <aside id="settings-panel" class="settings-panel" aria-hidden="true">
+    <div class="settings-box">
+      <h3 data-i18n="backend_title"></h3>
+      <p class="screen-sub" data-i18n="backend_text"></p>
+      <form id="backend-form" class="form compact">
+        <label>
+          <span data-i18n="backend_url"></span>
+          <input id="supabaseUrl" placeholder="https://your-project.supabase.co">
+        </label>
+        <label>
+          <span data-i18n="backend_key"></span>
+          <input id="supabaseAnonKey" placeholder="public anon key">
+        </label>
+        <div class="row">
+          <button type="submit" class="btn btn-primary" data-i18n="save_connect"></button>
+          <button type="button" class="btn btn-secondary" data-action="close-settings" data-i18n="close"></button>
+        </div>
+      </form>
+    </div>
+  </aside>
+
+  <aside id="onboarding" class="onboarding" aria-live="polite">
+    <div class="onboarding-card">
+      <strong id="onboarding-title"></strong>
+      <p id="onboarding-text"></p>
+      <div class="row">
+        <button class="btn btn-secondary" data-action="skip-tips" data-i18n="tips_skip"></button>
+        <button class="btn btn-primary" data-action="next-tip" data-i18n="tips_next"></button>
+      </div>
+    </div>
+  </aside>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
