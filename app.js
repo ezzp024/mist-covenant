@@ -59,11 +59,19 @@ const i18n = {
     auth_or: "או",
     auth_google: "כניסה עם Google",
     auth_logout: "התנתק",
+    debug_btn: "דיבאג",
+    debug_route: "מסך",
+    debug_auth: "אימות",
+    debug_backend: "שרת",
+    debug_commander: "מפקד",
     auth_ok: "התחברות בוצעה בהצלחה.",
     auth_logged_out: "התנתקת בהצלחה.",
     auth_register_ok: "ההרשמה בוצעה. אם הופעל אימות מייל, יש לאשר במייל.",
     auth_fail: "התחברות נכשלה. בדוק אימייל/סיסמה.",
     auth_no_backend: "כניסה מאובטחת זמינה לאחר חיבור Supabase.",
+    guard_need_login: "יש להתחבר לפני ביצוע פעולה זו.",
+    guard_need_character: "יש להשלים יצירת דמות לפני פעולה זו.",
+    guard_need_faction: "יש לבחור סיעה לפני פעולה זו.",
     continue: "המשך",
     character_title: "יצירת דמות",
     char_name: "שם המפקד",
@@ -305,11 +313,19 @@ const i18n = {
     auth_or: "or",
     auth_google: "Continue with Google",
     auth_logout: "Logout",
+    debug_btn: "Debug",
+    debug_route: "Route",
+    debug_auth: "Auth",
+    debug_backend: "Backend",
+    debug_commander: "Commander",
     auth_ok: "Login completed successfully.",
     auth_logged_out: "Logged out successfully.",
     auth_register_ok: "Registration completed. Confirm email if verification is enabled.",
     auth_fail: "Login failed. Check email and password.",
     auth_no_backend: "Secure auth is available after Supabase is connected.",
+    guard_need_login: "You must be logged in before this action.",
+    guard_need_character: "Complete character creation before this action.",
+    guard_need_faction: "Select a faction before this action.",
     continue: "Continue",
     character_title: "Character Creation",
     char_name: "Commander Name",
@@ -551,11 +567,19 @@ const i18n = {
     auth_or: "или",
     auth_google: "Войти через Google",
     auth_logout: "Выйти",
+    debug_btn: "Дебаг",
+    debug_route: "Экран",
+    debug_auth: "Авторизация",
+    debug_backend: "Сервер",
+    debug_commander: "Командир",
     auth_ok: "Вход выполнен успешно.",
     auth_logged_out: "Вы успешно вышли.",
     auth_register_ok: "Регистрация завершена. Подтвердите email при необходимости.",
     auth_fail: "Ошибка входа. Проверьте email и пароль.",
     auth_no_backend: "Защищенный вход доступен после подключения Supabase.",
+    guard_need_login: "Сначала войдите в систему.",
+    guard_need_character: "Сначала завершите создание персонажа.",
+    guard_need_faction: "Сначала выберите фракцию.",
     continue: "Далее",
     character_title: "Создание персонажа",
     char_name: "Имя командира",
@@ -801,6 +825,7 @@ const state = {
   user: loadUser(),
   authReady: false,
   authUserId: null,
+  debugOpen: false,
   backendStatus: "",
   leaderboard: [],
   feed: [],
@@ -946,6 +971,41 @@ function renderAuthUi() {
   logoutBtn.style.display = isAuthenticated() ? "inline-flex" : "none";
 }
 
+function renderDebugPanel() {
+  const panel = document.getElementById("debug-panel");
+  if (!panel) return;
+  panel.classList.toggle("open", state.debugOpen);
+  panel.setAttribute("aria-hidden", String(!state.debugOpen));
+  document.getElementById("debug-route").textContent = state.step;
+  document.getElementById("debug-auth").textContent = isAuthenticated() ? "yes" : "no";
+  document.getElementById("debug-backend").textContent = backend.mode;
+  document.getElementById("debug-commander").textContent = state.user.commander || "-";
+}
+
+function toggleDebugPanel() {
+  state.debugOpen = !state.debugOpen;
+  renderDebugPanel();
+}
+
+function assertGameplayReady() {
+  if (!isAuthenticated()) {
+    authStatus("guard_need_login");
+    navigate("auth");
+    return false;
+  }
+  if (!hasCharacterProfile()) {
+    authStatus("guard_need_character");
+    navigate("character");
+    return false;
+  }
+  if (!state.user.faction) {
+    authStatus("guard_need_faction");
+    navigate("faction");
+    return false;
+  }
+  return true;
+}
+
 function regen() {
   const now = Date.now();
   const gained = Math.floor((now - state.user.lastTick) / TICK_MS);
@@ -1038,6 +1098,7 @@ function hideTipsForever() {
 function refreshUI() {
   regen();
   renderAuthUi();
+  renderDebugPanel();
   renderStats();
   document.getElementById("rank-value").textContent = `#${getRank()}`;
   document.getElementById("season-value").textContent = String(getSeasonDay());
@@ -2281,8 +2342,16 @@ document.addEventListener("click", async (e) => {
 
   try {
     if (action === "go") navigate(target.dataset.step);
-    if (action === "turn") await doAction(target.dataset.type);
+    if (action === "turn") {
+      if (!assertGameplayReady()) return;
+      await doAction(target.dataset.type);
+    }
     if (action === "pick-faction") {
+      if (!isAuthenticated()) {
+        authStatus("guard_need_login");
+        navigate("auth");
+        return;
+      }
       state.user.faction = target.dataset.value;
       saveUser();
       renderFactions();
@@ -2292,11 +2361,24 @@ document.addEventListener("click", async (e) => {
     if (action === "close-settings") openSettings(false);
     if (action === "skip-tips") hideTipsForever();
     if (action === "next-tip") document.getElementById("onboarding").classList.remove("open");
-    if (action === "bank") await doBank(target.dataset.type);
-    if (action === "market") await doMarket(target.dataset.type);
-    if (action === "upgrade-city") await doCityUpgrade();
-    if (action === "council-treasury") await doCouncilTreasury(target.dataset.type);
+    if (action === "bank") {
+      if (!assertGameplayReady()) return;
+      await doBank(target.dataset.type);
+    }
+    if (action === "market") {
+      if (!assertGameplayReady()) return;
+      await doMarket(target.dataset.type);
+    }
+    if (action === "upgrade-city") {
+      if (!assertGameplayReady()) return;
+      await doCityUpgrade();
+    }
+    if (action === "council-treasury") {
+      if (!assertGameplayReady()) return;
+      await doCouncilTreasury(target.dataset.type);
+    }
     if (action === "promote-member") {
+      if (!assertGameplayReady()) return;
       const commander = document.getElementById("promoteMember")?.value?.trim();
       await promoteMemberToOfficer(commander);
     }
@@ -2304,13 +2386,21 @@ document.addEventListener("click", async (e) => {
     if (action === "auth-login") await doLogin();
     if (action === "auth-google") await doGoogleLogin();
     if (action === "auth-logout") await doLogout();
-    if (action === "shop") await doShop(target.dataset.item, target.dataset.mode);
-    if (action === "workers-save") await saveWorkers();
+    if (action === "shop") {
+      if (!assertGameplayReady()) return;
+      await doShop(target.dataset.item, target.dataset.mode);
+    }
+    if (action === "workers-save") {
+      if (!assertGameplayReady()) return;
+      await saveWorkers();
+    }
     if (action === "war-add") {
+      if (!assertGameplayReady()) return;
       const targetId = document.getElementById("warTargetSelect")?.value;
       const assigned = document.getElementById("warAssignInput")?.value?.trim();
       await addWarTarget(targetId, assigned);
     }
+    if (action === "toggle-debug") toggleDebugPanel();
   } catch (err) {
     const msg = err?.message || "Unexpected error";
     authStatus(msg);
@@ -2327,6 +2417,11 @@ document.getElementById("actionTargetSelect")?.addEventListener("change", () => 
 
 document.getElementById("character-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!isAuthenticated()) {
+    authStatus("guard_need_login");
+    navigate("auth");
+    return;
+  }
   state.user.commander = document.getElementById("charName").value.trim();
   state.user.origin = document.getElementById("origin").value;
   state.user.trait = document.getElementById("trait").value;
@@ -2337,6 +2432,7 @@ document.getElementById("character-form").addEventListener("submit", async (e) =
 
 document.getElementById("create-clan-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!assertGameplayReady()) return;
   const name = document.getElementById("newClanName").value.trim();
   const status = document.getElementById("clan-status");
   if (!name) {
@@ -2360,6 +2456,7 @@ document.getElementById("create-clan-form").addEventListener("submit", async (e)
 
 document.getElementById("join-clan-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!assertGameplayReady()) return;
   const code = document.getElementById("joinCode").value.trim().toUpperCase();
   const status = document.getElementById("clan-status");
   if (code.length < 5) {

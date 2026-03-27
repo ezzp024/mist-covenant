@@ -381,6 +381,29 @@ select {
   color: var(--muted);
 }
 
+.debug-panel {
+  position: fixed;
+  inset-inline-end: 12px;
+  bottom: 12px;
+  z-index: 25;
+  background: rgba(8, 22, 34, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 260px;
+  display: none;
+}
+
+.debug-panel.open {
+  display: block;
+}
+
+.debug-grid {
+  display: grid;
+  gap: 6px;
+  font-size: 0.86rem;
+}
+
 .btn:focus-visible,
 .nav-btn:focus-visible,
 input:focus-visible,

@@ -57,6 +57,10 @@ Run automated smoke helper:
 
 `node scripts/smoke-check.mjs`
 
+Run auth/router stability smoke helper:
+
+`node scripts/smoke-auth-state.mjs`
+
 ## Deploy to GitHub Pages
 
 Deploy from branch root

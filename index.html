@@ -20,6 +20,7 @@
     </nav>
     <div class="top-controls">
       <button class="nav-btn" data-action="open-settings" data-i18n="backend_settings"></button>
+      <button class="nav-btn" data-action="toggle-debug" data-i18n="debug_btn"></button>
       <button class="nav-btn" id="logout-btn" data-action="auth-logout" data-i18n="auth_logout"></button>
       <label class="lang-label" for="lang" data-i18n="language"></label>
       <select id="lang" class="lang-select" aria-label="Language selector">
@@ -369,6 +370,15 @@
       <button class="btn btn-primary" data-action="go" data-step="dashboard" data-i18n="to_dashboard"></button>
     </section>
   </main>
+
+  <aside id="debug-panel" class="debug-panel" aria-hidden="true">
+    <div class="debug-grid">
+      <div><strong data-i18n="debug_route"></strong>: <span id="debug-route">-</span></div>
+      <div><strong data-i18n="debug_auth"></strong>: <span id="debug-auth">-</span></div>
+      <div><strong data-i18n="debug_backend"></strong>: <span id="debug-backend">-</span></div>
+      <div><strong data-i18n="debug_commander"></strong>: <span id="debug-commander">-</span></div>
+    </div>
+  </aside>
 
   <aside id="settings-panel" class="settings-panel" aria-hidden="true">
     <div class="settings-box">
