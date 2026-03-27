@@ -1,13 +1,13 @@
 :root {
-  --bg: #0a1724;
-  --panel: #10263a;
-  --panel-soft: #17344e;
-  --line: #2f5776;
-  --text: #e9f2f8;
-  --muted: #9eb9ce;
-  --accent: #27d0a8;
-  --accent-2: #ffc75b;
-  --danger: #ff6c70;
+  --bg: #261d14;
+  --panel: #f2e3c3;
+  --panel-soft: #e8d6b0;
+  --line: #6d4e2f;
+  --text: #22170f;
+  --muted: #5a4534;
+  --accent: #7f2d17;
+  --accent-2: #916f3f;
+  --danger: #8e261d;
 }
 
 * {
@@ -16,11 +16,12 @@
 
 body {
   margin: 0;
-  font-family: "Heebo", "Rubik", sans-serif;
+  font-family: "Alef", "Courier Prime", monospace;
   color: var(--text);
   background:
-    radial-gradient(1200px 500px at 10% -20%, #224f73 0%, transparent 60%),
-    radial-gradient(900px 400px at 100% 0%, #1b3858 0%, transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 4px),
+    radial-gradient(1200px 600px at 15% -20%, #4a341f 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, #3d2a18 0%, transparent 62%),
     var(--bg);
   min-height: 100vh;
 }
@@ -33,9 +34,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 22px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(7, 20, 31, 0.85);
-  backdrop-filter: blur(6px);
+  border-bottom: 2px solid var(--line);
+  background: #3a2818;
 }
 
 .topbar::after {
@@ -45,15 +45,16 @@ body {
   right: 0;
   bottom: -1px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.45;
+  background: linear-gradient(90deg, transparent, #d2b17b, transparent);
+  opacity: 0.8;
 }
 
 .brand {
-  color: var(--text);
+  color: #f8e9c9;
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
 .topnav {
@@ -65,20 +66,20 @@ body {
 .btn,
 .action-card {
   font-family: inherit;
-  border: 1px solid transparent;
-  border-radius: 12px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   cursor: pointer;
 }
 
 .nav-btn {
-  background: transparent;
-  color: var(--muted);
+  background: #4a331e;
+  color: #e8d6b4;
   padding: 8px 12px;
 }
 
 .nav-btn:hover {
-  color: var(--text);
-  border-color: var(--line);
+  color: #fff3d8;
+  border-color: #b68a55;
 }
 
 .top-controls {
@@ -88,15 +89,15 @@ body {
 }
 
 .lang-label {
-  color: var(--muted);
+  color: #d6be95;
   font-size: 0.9rem;
 }
 
 .lang-select {
-  background: var(--panel-soft);
-  color: var(--text);
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  background: #e8d6b0;
+  color: #2a1c11;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 6px 8px;
 }
 
@@ -116,9 +117,10 @@ body {
 }
 
 .hero {
-  background: linear-gradient(160deg, rgba(23, 52, 78, 0.95), rgba(11, 33, 49, 0.95));
-  border: 1px solid var(--line);
-  border-radius: 24px;
+  background: linear-gradient(180deg, #f3e5c7, #e3cfa6);
+  border: 2px solid var(--line);
+  box-shadow: 0 0 0 2px #b8925f inset;
+  border-radius: 0;
   padding: 26px;
   margin-bottom: 22px;
 }
@@ -162,22 +164,22 @@ h2 {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: #032117;
+  background: #7f2d17;
+  color: #f6e6cb;
 }
 
 .btn-primary:hover {
-  background: #34e1b8;
+  background: #983821;
 }
 
 .btn-secondary {
-  background: var(--panel-soft);
-  color: var(--text);
+  background: #e8d6b0;
+  color: #291b10;
   border-color: var(--line);
 }
 
 .btn-secondary:hover {
-  background: #224a68;
+  background: #efdcb8;
 }
 
 .cards {
@@ -194,17 +196,17 @@ h2 {
 }
 
 .card {
-  background: rgba(18, 38, 56, 0.95);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: linear-gradient(180deg, #f1e1c0, #e7d3ab);
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 0 2px #caa873 inset;
 }
 
 .flow-list {
-  background: rgba(14, 35, 53, 0.9);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: #e9d8b4;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 18px 24px;
   margin-bottom: 16px;
 }
@@ -236,10 +238,10 @@ input,
 select {
   width: 100%;
   padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #0f2436;
-  color: var(--text);
+  border-radius: 0;
+  border: 2px solid var(--line);
+  background: #f7edd8;
+  color: #28190f;
 }
 
 .stats {
@@ -250,9 +252,9 @@ select {
 }
 
 .stat {
-  background: rgba(18, 38, 56, 0.95);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  background: #e8d3aa;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 12px;
 }
 
@@ -269,13 +271,13 @@ select {
 .action-card {
   text-align: start;
   padding: 16px;
-  background: rgba(16, 38, 57, 0.96);
-  color: var(--text);
+  background: #e8d5b0;
+  color: #24170f;
   border-color: var(--line);
 }
 
 .action-card:hover {
-  border-color: var(--accent-2);
+  border-color: #a87c46;
 }
 
 .action-card strong,
@@ -290,7 +292,7 @@ select {
 
 .status {
   margin: 14px 0;
-  color: var(--accent-2);
+  color: #6f321d;
 }
 
 .table-list,
@@ -304,9 +306,9 @@ select {
   justify-content: space-between;
   gap: 10px;
   padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: rgba(8, 24, 37, 0.6);
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #f7ecd5;
 }
 
 .row-item .minor {
@@ -321,7 +323,7 @@ select {
 .settings-panel {
   position: fixed;
   inset: 0;
-  background: rgba(4, 12, 18, 0.72);
+  background: rgba(38, 27, 18, 0.72);
   display: none;
   align-items: center;
   justify-content: center;
@@ -335,9 +337,9 @@ select {
 
 .settings-box {
   width: min(640px, 100%);
-  background: linear-gradient(180deg, #10263a, #0b1e2e);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: linear-gradient(180deg, #f1dfbd, #e4cfa5);
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 18px;
 }
 
@@ -369,9 +371,9 @@ select {
 .onboarding-card {
   max-width: 600px;
   margin-inline: auto;
-  background: linear-gradient(180deg, #15344d, #10283c);
-  border: 1px solid #3f6987;
-  border-radius: 14px;
+  background: linear-gradient(180deg, #f2e2c2, #e4cea4);
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 14px;
   box-shadow: 0 8px 36px rgba(0, 0, 0, 0.3);
 }
@@ -386,9 +388,9 @@ select {
   inset-inline-end: 12px;
   bottom: 12px;
   z-index: 25;
-  background: rgba(8, 22, 34, 0.92);
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  background: #ead9b6;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 10px;
   min-width: 260px;
   display: none;
@@ -418,6 +420,13 @@ body.busy .nav-btn,
 body.busy .action-card {
   pointer-events: none;
   opacity: 0.75;
+}
+
+h1,
+h2,
+h3,
+.brand {
+  font-family: "Courier Prime", "Alef", monospace;
 }
 
 .big {
