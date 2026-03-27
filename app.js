@@ -1058,6 +1058,12 @@ async function initBackend() {
       state.user.email = user.email || state.user.email;
       saveUser();
       syncPresence();
+      authStatus("auth_ok");
+      if (!state.user.commander) {
+        show("character");
+      } else {
+        show("dashboard");
+      }
       refreshUI();
     });
     wireRealtime();
@@ -1539,6 +1545,12 @@ async function pullAuthSession() {
   state.user.email = user.email || state.user.email;
   saveUser();
   await syncPresence();
+  authStatus("auth_ok");
+  if (!state.user.commander) {
+    show("character");
+  } else {
+    show("dashboard");
+  }
 }
 
 async function doRegister() {
