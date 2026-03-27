@@ -22,7 +22,10 @@ body {
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 4px),
     radial-gradient(1200px 600px at 15% -20%, #4a341f 0%, transparent 60%),
     radial-gradient(900px 500px at 100% 0%, #3d2a18 0%, transparent 62%),
+    url("assets/backgrounds/medieval-village.svg"),
     var(--bg);
+  background-size: auto, auto, auto, 900px, auto;
+  background-repeat: repeat, no-repeat, no-repeat, repeat, repeat;
   min-height: 100vh;
 }
 
@@ -123,6 +126,20 @@ body {
   border-radius: 0;
   padding: 26px;
   margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 8px;
+  bottom: 8px;
+  width: 120px;
+  height: 120px;
+  background: url("assets/backgrounds/huts-village.svg") center/contain no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 .eyebrow {
@@ -261,6 +278,16 @@ select {
 .stat .k {
   color: var(--muted);
   font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.8;
 }
 
 .stat .v {

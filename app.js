@@ -140,9 +140,11 @@ const i18n = {
     action_scout: "סיור מודיעיני",
     action_strike: "פשיטה טקטית",
     action_train: "אימון מומחים",
+    action_ritual: "טקס מאנה",
     cost_2: "עלות: 2 נק' פיקוד",
     cost_3: "עלות: 3 נק' פיקוד",
     cost_4: "עלות: 4 נק' פיקוד",
+    cost_mana: "עלות: 2 נק' פיקוד + 8 מאנה",
     social_title: "חברה ומועצות",
     social_ops: "מבצעי מועצה",
     social_ops_text: "תיאום מטרות בין חברי המועצה מעניק בונוס השפעה עונתי.",
@@ -173,9 +175,11 @@ const i18n = {
     need_points: "אין מספיק נקודות פיקוד לפעולה הזו.",
     need_supply: "אין מספיק אספקה לביצוע פשיטה.",
     need_alloy: "אין מספיק סגסוגת לאימון.",
+    need_mana: "אין מספיק מאנה לפעולה זו.",
     log_scout: "הסיור הצליח: נוספו מודיעין והשפעה.",
     log_strike: "הפשיטה הסתיימה: רווחת אשראי, אך צרכת אספקה.",
     log_train: "האימון הסתיים: יעילות הכוחות עלתה.",
+    log_ritual: "הטקס הושלם: מאנה הומרה להשפעה ומודיעין.",
     intel_reports_title: "דוחות מודיעין אחרונים",
     report_fresh: "דוח עדכני",
     report_old: "דוח ישן",
@@ -276,6 +280,7 @@ const i18n = {
     stat_alloys: "סגסוגת",
     stat_intel: "מודיעין",
     stat_influence: "השפעה",
+    stat_mana: "מאנה",
     stat_bank: "יתרת בנק",
     tips_next: "טיפ הבא",
     tips_skip: "סגור הדרכה",
@@ -410,9 +415,11 @@ const i18n = {
     action_scout: "Intel Sweep",
     action_strike: "Tactical Raid",
     action_train: "Specialist Training",
+    action_ritual: "Mana Ritual",
     cost_2: "Cost: 2 command points",
     cost_3: "Cost: 3 command points",
     cost_4: "Cost: 4 command points",
+    cost_mana: "Cost: 2 command points + 8 mana",
     social_title: "Social and Councils",
     social_ops: "Council Operations",
     social_ops_text: "Aligned targets grant stronger seasonal influence.",
@@ -443,9 +450,11 @@ const i18n = {
     need_points: "Not enough command points for this action.",
     need_supply: "Not enough supplies for a raid.",
     need_alloy: "Not enough alloy for training.",
+    need_mana: "Not enough mana for this action.",
     log_scout: "Sweep complete: intel and influence increased.",
     log_strike: "Raid complete: credits gained, supplies consumed.",
     log_train: "Training complete: combat efficiency increased.",
+    log_ritual: "Ritual complete: mana converted into influence and intel.",
     intel_reports_title: "Recent Intel Reports",
     report_fresh: "Fresh report",
     report_old: "Outdated report",
@@ -546,6 +555,7 @@ const i18n = {
     stat_alloys: "Alloys",
     stat_intel: "Intel",
     stat_influence: "Influence",
+    stat_mana: "Mana",
     stat_bank: "Bank",
     tips_next: "Next Tip",
     tips_skip: "Close",
@@ -680,9 +690,11 @@ const i18n = {
     action_scout: "Разведка",
     action_strike: "Тактический рейд",
     action_train: "Подготовка специалистов",
+    action_ritual: "Ритуал маны",
     cost_2: "Цена: 2 очка",
     cost_3: "Цена: 3 очка",
     cost_4: "Цена: 4 очка",
+    cost_mana: "Цена: 2 очка + 8 маны",
     social_title: "Социальная система",
     social_ops: "Операции совета",
     social_ops_text: "Согласованные цели усиливают сезонное влияние.",
@@ -713,9 +725,11 @@ const i18n = {
     need_points: "Недостаточно очков командования.",
     need_supply: "Недостаточно припасов для рейда.",
     need_alloy: "Недостаточно сплава для тренировки.",
+    need_mana: "Недостаточно маны для этого действия.",
     log_scout: "Разведка завершена: разведданные и влияние выросли.",
     log_strike: "Рейд завершен: кредиты получены, припасы потрачены.",
     log_train: "Тренировка завершена: эффективность выросла.",
+    log_ritual: "Ритуал завершен: мана преобразована во влияние и разведку.",
     intel_reports_title: "Последние разведотчеты",
     report_fresh: "Свежий отчет",
     report_old: "Устаревший отчет",
@@ -816,6 +830,7 @@ const i18n = {
     stat_alloys: "Сплав",
     stat_intel: "Разведка",
     stat_influence: "Влияние",
+    stat_mana: "Мана",
     stat_bank: "Банк",
     tips_next: "След. совет",
     tips_skip: "Закрыть",
@@ -906,6 +921,7 @@ function defaultUser() {
     alloys: 420,
     intel: 75,
     influence: 20,
+    mana: 30,
     power: 110,
     bankGold: 0,
     cityTier: 1,
@@ -1097,6 +1113,7 @@ function regen() {
     state.user.credits += Math.floor(90 * gained * bonus * (workers.gold / 100));
     state.user.supplies += Math.floor(90 * gained * bonus * (workers.supply / 100));
     state.user.alloys += Math.floor(90 * gained * bonus * (workers.alloy / 100));
+    state.user.mana = Math.min(240, (state.user.mana || 0) + 4 * gained);
     state.user.bankGold += Math.floor(state.user.bankGold * 0.01 * gained);
     state.user.lastTick += gained * TICK_MS;
     saveUser();
@@ -1205,20 +1222,21 @@ function renderStats() {
   const stats = document.getElementById("stats");
   if (!stats) return;
   const rows = [
-    [t("stat_cp"), state.user.commandPoints],
-    [t("stat_credits"), state.user.credits],
-    [t("stat_bank"), state.user.bankGold],
-    [t("stat_supplies"), state.user.supplies],
-    [t("stat_alloys"), state.user.alloys],
-    [t("stat_intel"), state.user.intel],
-    [t("stat_influence"), state.user.influence],
+    { label: t("stat_cp"), value: state.user.commandPoints, icon: "assets/icons/power.svg" },
+    { label: t("stat_credits"), value: state.user.credits, icon: "assets/icons/gold.svg" },
+    { label: t("stat_bank"), value: state.user.bankGold, icon: "assets/icons/bank.svg" },
+    { label: t("stat_supplies"), value: state.user.supplies, icon: "assets/icons/food.svg" },
+    { label: t("stat_alloys"), value: state.user.alloys, icon: "assets/icons/iron.svg" },
+    { label: t("stat_intel"), value: state.user.intel, icon: "assets/icons/intel.svg" },
+    { label: t("stat_influence"), value: state.user.influence, icon: "assets/icons/wood.svg" },
+    { label: t("stat_mana"), value: state.user.mana || 0, icon: "assets/icons/mana.svg" },
   ];
 
   stats.innerHTML = "";
-  rows.forEach(([k, v]) => {
+  rows.forEach((row) => {
     const node = document.createElement("div");
     node.className = "stat";
-    node.innerHTML = `<div class="k">${k}</div><div class="v">${Number(v).toLocaleString()}</div>`;
+    node.innerHTML = `<div class="k"><img class="stat-icon" src="${row.icon}" alt="">${row.label}</div><div class="v">${Number(row.value).toLocaleString()}</div>`;
     stats.appendChild(node);
   });
 }
@@ -1652,6 +1670,14 @@ async function doAction(type) {
       state.user.alloys -= 35;
       state.user.power += 12;
       return t("log_train");
+    },
+    ritual: () => {
+      if (!spendPoints(2)) return t("need_points");
+      if ((state.user.mana || 0) < 8) return t("need_mana");
+      state.user.mana -= 8;
+      state.user.influence += 10;
+      state.user.intel += 6;
+      return t("log_ritual");
     },
   };
 
@@ -2293,6 +2319,7 @@ async function runSeasonResetIfNeeded() {
   state.user.alloys = 420;
   state.user.intel = 75;
   state.user.influence = 20;
+  state.user.mana = 30;
   state.user.power = 110;
   state.user.cityTier = 1;
   state.user.bankGold = 0;

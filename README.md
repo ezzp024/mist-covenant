@@ -16,6 +16,7 @@ Original browser-based multiplayer turn-strategy prototype with Hebrew-first UX 
 - `supabase-schema.sql` - SQL to create shared multiplayer tables
 - `BACKEND_CONTRACT.md` - frozen backend schema contract and change policy
 - `qa-auth-routing.html` - manual QA harness for auth and navigation checks
+- `ASSET_ATTRIBUTION.md` - attribution for downloaded free high-res assets
 - `.nojekyll` - disables Jekyll processing for static assets
 - `404.html` - fallback redirect for Pages
 - `CNAME.example` - template for optional custom domain
@@ -96,4 +97,5 @@ Site URL:
 - Worker allocation panel that changes passive resource production.
 - Council ranking panel, clan-assist combat bonus, and shared war room target board.
 - City-to-city progression gates with unlock requirements and production multipliers.
+- Mana resource with ritual action in the turn loop.
 - Onboarding tooltip hints across main screens.
