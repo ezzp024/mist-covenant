@@ -14,7 +14,6 @@ Original browser-based multiplayer turn-strategy prototype with Hebrew-first UX 
 - `config.js` - runtime backend configuration (safe public values only)
 - `config.example.js` - template for configuration
 - `supabase-schema.sql` - SQL to create shared multiplayer tables
-- `.github/workflows/pages.yml` - auto deploy workflow to GitHub Pages
 - `.nojekyll` - disables Jekyll processing for static assets
 - `404.html` - fallback redirect for Pages
 - `CNAME.example` - template for optional custom domain
@@ -47,21 +46,15 @@ Notes:
 
 ## Deploy to GitHub Pages
 
-### Option A (recommended): GitHub Actions (already configured)
-
-1. Push this folder to a GitHub repo on branch `main`.
-2. In repo settings -> Pages -> Build and deployment, choose **GitHub Actions**.
-3. Push again (or run workflow manually) and wait for deploy.
-
-Site URL:
-
-`https://<your-username>.github.io/<repo-name>/`
-
-### Option B: Deploy from branch root
+Deploy from branch root
 
 1. In Pages settings choose **Deploy from a branch**.
 2. Select `main` and `/ (root)`.
 3. Save.
+
+Site URL:
+
+`https://<your-username>.github.io/<repo-name>/`
 
 ## Optional custom domain
 
